@@ -1,7 +1,6 @@
 #![allow(unused_variables)]
 use std::env;
 use std::fs;
-use std::str::FromStr;
 
 mod lex;
 
@@ -41,7 +40,7 @@ fn main() {
                     if token.is_whitespace() {
                         continue;
                     };
-                    match Tokens::from_str(&token.to_string()) {
+                    match Tokens::from_char(&token) {
                         Ok(Tokens::StringQuote) => {
                             let mut string_literal: Vec<char> = vec![];
                             let mut terminated = false;
@@ -62,6 +61,41 @@ fn main() {
                             } else {
                                 let s: String = string_literal.iter().collect();
                                 println!("{} {}", Tokens::String(s.clone()), s);
+                            }
+                        }
+                        Ok(Tokens::Number(_)) => {
+                            let mut before_decimal: Vec<char> = vec![];
+                            let mut after_decimal: Vec<char> = vec![];
+                            before_decimal.push(token);
+                            while let Some(t) = iter.next() {
+                                match t {
+                                    '0'..='9' => before_decimal.push(t),
+                                    '.' => {
+                                        while let Some(t) = iter.next() {
+                                            match t {
+                                                '0'..='9' => after_decimal.push(t),
+                                                '.' => {
+                                                    eprintln!(
+                                                        "[line {}] Error: Unexpected character.",
+                                                        line
+                                                    );
+                                                    std::process::exit(65);
+                                                }
+                                                _ => break,
+                                            }
+                                        }
+                                        break;
+                                    }
+                                    _ => break,
+                                }
+                                let s: String = [
+                                    before_decimal.iter().collect(),
+                                    ".".to_string(),
+                                    after_decimal.iter().collect(),
+                                ]
+                                .join("");
+                                let f: f64 = s.parse().unwrap();
+                                println!("{} {}", Tokens::Number(s), f);
                             }
                         }
                         Ok(t) => {

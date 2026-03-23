@@ -1,4 +1,4 @@
-use std::{fmt, str::FromStr};
+use std::fmt;
 
 #[derive(Debug)]
 pub enum Tokens {
@@ -24,6 +24,7 @@ pub enum Tokens {
     GreaterEqual,
     StringQuote,
     String(String),
+    Number(String),
     EOF,
 }
 
@@ -52,42 +53,40 @@ impl fmt::Display for Tokens {
             Tokens::GreaterEqual => write!(f, "GREATER_EQUAL >="),
             Tokens::StringQuote => write!(f, "STRING_QUOTE \""),
             Tokens::String(literal) => write!(f, "STRING \"{}\"", literal),
+            Tokens::Number(literal) => write!(f, "NUMBER {}", literal),
             Tokens::EOF => write!(f, "EOF"),
         }
     }
 }
 
-impl FromStr for Tokens {
-    type Err = String;
-    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
-        match s {
-            "(" => Ok(Tokens::LeftParen),
-            ")" => Ok(Tokens::RightParen),
-            "{" => Ok(Tokens::LeftBraces),
-            "}" => Ok(Tokens::RightBraces),
-            "*" => Ok(Tokens::Star),
-            "." => Ok(Tokens::Dot),
-            "," => Ok(Tokens::Comma),
-            "+" => Ok(Tokens::Plus),
-            "-" => Ok(Tokens::Minus),
-            ";" => Ok(Tokens::Semicolon),
-            "/" => Ok(Tokens::Slash),
-            "//" => Ok(Tokens::DoubleSlash),
-            "=" => Ok(Tokens::Equal),
-            "==" => Ok(Tokens::EqualEqual),
-            "!" => Ok(Tokens::Bang),
-            "!=" => Ok(Tokens::BangEqual),
-            "<" => Ok(Tokens::Less),
-            "<=" => Ok(Tokens::LessEqual),
-            ">" => Ok(Tokens::Greater),
-            ">=" => Ok(Tokens::GreaterEqual),
-            "\"" => Ok(Tokens::StringQuote),
-            _ => Err(s.to_string()),
+impl Tokens {
+    pub fn from_char(t: &char) -> Result<Tokens, char> {
+        match t {
+            '(' => Ok(Tokens::LeftParen),
+            ')' => Ok(Tokens::RightParen),
+            '{' => Ok(Tokens::LeftBraces),
+            '}' => Ok(Tokens::RightBraces),
+            '*' => Ok(Tokens::Star),
+            '.' => Ok(Tokens::Dot),
+            ',' => Ok(Tokens::Comma),
+            '+' => Ok(Tokens::Plus),
+            '-' => Ok(Tokens::Minus),
+            ';' => Ok(Tokens::Semicolon),
+            '/' => Ok(Tokens::Slash),
+            // '//' => Ok(Tokens::DoubleSlash),
+            '=' => Ok(Tokens::Equal),
+            // '==' => Ok(Tokens::EqualEqual),
+            '!' => Ok(Tokens::Bang),
+            // '!=' => Ok(Tokens::BangEqual),
+            '<' => Ok(Tokens::Less),
+            // '<=' => Ok(Tokens::LessEqual),
+            '>' => Ok(Tokens::Greater),
+            '0'..='9' => Ok(Tokens::Number("".to_string())),
+            // '>=' => Ok(Tokens::GreaterEqual),
+            '"' => Ok(Tokens::StringQuote),
+            _ => Err(*t),
         }
     }
-}
-
-impl Tokens {
     pub fn double_char_operator(&self, next: char) -> Option<Tokens> {
         match self {
             Tokens::Equal => match next {
