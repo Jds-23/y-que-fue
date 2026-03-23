@@ -24,9 +24,6 @@ fn main() {
 
             // TODO: Uncomment the code below to pass the first stage
             if !file_contents.is_empty() {
-                panic!("Scanner not implemented");
-            } else {
-                println!("{}", file_contents);
                 let tokens: Vec<&str> = file_contents.split("").collect();
                 for token in tokens {
                     match token {
@@ -41,6 +38,8 @@ fn main() {
                         }
                     }
                 }
+                println!("EOF  null"); // Placeholder, replace this line when implementing the scanner
+            } else {
                 println!("EOF  null"); // Placeholder, replace this line when implementing the scanner
             }
         }
