@@ -26,6 +26,20 @@ fn main() {
             if !file_contents.is_empty() {
                 panic!("Scanner not implemented");
             } else {
+                let tokens: Vec<&str> = file_contents.split("").collect();
+                for token in tokens {
+                    match token {
+                        "(" => {
+                            println!("LEFT_PAREN ( null");
+                        }
+                        ")" => {
+                            println!("RIGHT_PAREN ) null");
+                        }
+                        _ => {
+                            eprintln!("Unknown token: {}", token);
+                        }
+                    }
+                }
                 println!("EOF  null"); // Placeholder, replace this line when implementing the scanner
             }
         }
