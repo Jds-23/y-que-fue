@@ -37,7 +37,7 @@ fn main() {
                         Ok(t) => println!("{} null", t),
                         Err(e) => {
                             has_lexical_errors = true;
-                            println!("[line 1] Error: Unexpected character: {}", e);
+                            eprintln!("[line 1] Error: Unexpected character: {}", e);
                         }
                     }
                 }
