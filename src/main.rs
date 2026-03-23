@@ -4,6 +4,7 @@ use std::fs;
 
 mod lex;
 
+use crate::lex::identifier::extract_identifier;
 use crate::lex::lex::Tokens;
 use crate::lex::number::extract_number_literal;
 use crate::lex::string::extract_string_literal;
@@ -42,6 +43,11 @@ fn main() {
                     if token.is_whitespace() {
                         continue;
                     };
+                    if token.is_alphabetic() || token == '_' {
+                        let i = extract_identifier(&mut iter, &token);
+                        println!("{} null", Tokens::Identifier(i));
+                        continue;
+                    }
                     match Tokens::from_char(&token) {
                         Ok(Tokens::StringQuote) => {
                             let result = extract_string_literal(&mut iter, &mut line);

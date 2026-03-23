@@ -25,6 +25,7 @@ pub enum Tokens {
     StringQuote,
     String(String),
     Number(String),
+    Identifier(String),
     EOF,
 }
 
@@ -54,6 +55,7 @@ impl fmt::Display for Tokens {
             Tokens::StringQuote => write!(f, "STRING_QUOTE \""),
             Tokens::String(literal) => write!(f, "STRING \"{}\"", literal),
             Tokens::Number(literal) => write!(f, "NUMBER {}", literal),
+            Tokens::Identifier(identifier) => write!(f, "IDENTIFIER {}", identifier),
             Tokens::EOF => write!(f, "EOF"),
         }
     }

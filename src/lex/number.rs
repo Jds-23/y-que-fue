@@ -4,9 +4,8 @@ pub fn extract_number_literal(
     iter: &mut Peekable<impl Iterator<Item = char>>,
     token: &char,
 ) -> Option<String> {
-    let mut before_decimal: Vec<char> = vec![];
+    let mut before_decimal: Vec<char> = vec![*token];
     let mut after_decimal: Vec<char> = vec![];
-    before_decimal.push(*token);
     while let Some(t) = iter.peek() {
         match t {
             '0'..='9' => {
