@@ -1,5 +1,7 @@
 use std::{fmt, str::FromStr};
 
+use anyhow::Ok;
+
 #[derive(Debug)]
 pub enum Tokens {
     LeftParen,
@@ -22,6 +24,8 @@ pub enum Tokens {
     LessEqual,
     Greater,
     GreaterEqual,
+    StringQuote,
+    String(String),
     EOF,
 }
 
@@ -48,6 +52,8 @@ impl fmt::Display for Tokens {
             Tokens::LessEqual => write!(f, "LESS_EQUAL <="),
             Tokens::Greater => write!(f, "GREATER >"),
             Tokens::GreaterEqual => write!(f, "GREATER_EQUAL >="),
+            Tokens::StringQuote => write!(f, "STRING_QUOTE \""),
+            Tokens::String(literal) => write!(f, "STRING {}", literal),
             Tokens::EOF => write!(f, "EOF"),
         }
     }
@@ -77,6 +83,7 @@ impl FromStr for Tokens {
             "<=" => Ok(Tokens::LessEqual),
             ">" => Ok(Tokens::Greater),
             ">=" => Ok(Tokens::GreaterEqual),
+            "\"" => Ok(Tokens::StringQuote),
             _ => Err(s.to_string()),
         }
     }

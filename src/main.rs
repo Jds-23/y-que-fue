@@ -42,6 +42,26 @@ fn main() {
                         continue;
                     };
                     match Tokens::from_str(&token.to_string()) {
+                        Ok(Tokens::StringQuote) => {
+                            let mut string_literal: Vec<char> = vec![];
+                            let mut terminated = false;
+                            while let Some(t) = iter.next() {
+                                if t == '\n' {
+                                    line += 1;
+                                }
+                                if t == '\"' {
+                                    terminated = true;
+                                    break;
+                                }
+                                string_literal.push(t);
+                            }
+                            if !terminated {
+                                eprintln!("[line {}] Error:  Unterminated string.", line);
+                            } else {
+                                let s: String = string_literal.iter().collect();
+                                println!("{} {}", Tokens::String(s.clone()), s);
+                            }
+                        }
                         Ok(t) => {
                             let next = iter.peek().copied().unwrap_or('\0');
                             match t.double_char_operator(next) {
