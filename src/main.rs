@@ -57,6 +57,7 @@ fn main() {
                             }
                             if !terminated {
                                 eprintln!("[line {}] Error: Unterminated string.", line);
+                                println!("{}  null", Tokens::EOF);
                                 std::process::exit(65);
                             } else {
                                 let s: String = string_literal.iter().collect();
@@ -88,7 +89,7 @@ fn main() {
                     }
                 }
             }
-            println!("{}  null", Tokens::EOF); // Placeholder, replace this line when implementing the scanner
+            println!("{}  null", Tokens::EOF);
 
             if has_lexical_errors {
                 std::process::exit(65);
