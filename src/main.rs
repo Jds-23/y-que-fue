@@ -84,9 +84,9 @@ fn main() {
                                                 _ => break,
                                             }
                                         }
-                                        break;
+                                        continue;
                                     }
-                                    _ => break,
+                                    _ => continue,
                                 }
                             }
                             let s: String = if after_decimal.is_empty() {
