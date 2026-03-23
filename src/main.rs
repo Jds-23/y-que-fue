@@ -70,8 +70,8 @@ fn main() {
                             while let Some(t) = iter.peek() {
                                 match t {
                                     '0'..='9' => {
-                                        iter.next();
                                         before_decimal.push(*t);
+                                        iter.next();
                                     }
                                     '.' => {
                                         iter.next();
