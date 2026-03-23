@@ -31,10 +31,10 @@ fn main() {
             if !file_contents.is_empty() {
                 let tokens: Vec<&str> = file_contents.split("").collect();
                 for token in tokens.iter().filter(|t| **t != "") {
-                    println!("{}", token);
+                    // println!("{}", token);
                     match Tokens::from_str(token) {
                         Ok(t) => println!("{} null", t),
-                        Err(e) => eprintln!("[line 1] Error: Unexpected character: {}", e),
+                        Err(e) => println!("[line 1] Error: Unexpected character: {}", e),
                     }
                 }
             }
