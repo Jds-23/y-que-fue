@@ -37,6 +37,13 @@ fn main() {
                         Ok(t) => {
                             let next = iter.peek().map(|t| **t).unwrap_or("");
                             match t.double_char_operator(next) {
+                                Some(Tokens::DoubleSlash) => {
+                                    while let Some(t) = iter.next() {
+                                        if *t == "/n" {
+                                            break;
+                                        }
+                                    }
+                                }
                                 Some(t) => {
                                     iter.next();
                                     println!("{} null", t)
