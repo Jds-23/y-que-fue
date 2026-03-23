@@ -14,8 +14,8 @@ impl fmt::Display for Tokens {
         match self {
             Tokens::LeftParen=>write!(f,"LEFT_PAREN ("),
             Tokens::RightParen=>write!(f,"RIGHT_PAREN )"),
-            Tokens::LeftBraces=>write!(f,"LEFT_BRACES {{"),
-            Tokens::RightBraces=>write!(f,"RIGHT_BRACES }}"),
+            Tokens::LeftBraces=>write!(f,"LEFT_BRACE {{"),
+            Tokens::RightBraces=>write!(f,"RIGHT_BRACE }}"),
             Tokens::EOF=>write!(f,"EOF")
         }
     }
