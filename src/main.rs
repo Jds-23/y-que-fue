@@ -5,6 +5,7 @@ use std::fs;
 mod lex;
 
 use crate::lex::lex::Tokens;
+use crate::lex::string::extract_string_literal;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -42,25 +43,16 @@ fn main() {
                     };
                     match Tokens::from_char(&token) {
                         Ok(Tokens::StringQuote) => {
-                            let mut string_literal: Vec<char> = vec![];
-                            let mut terminated = false;
-                            while let Some(t) = iter.next() {
-                                if t == '\n' {
-                                    line += 1;
+                            let result = extract_string_literal(&mut iter, &mut line);
+                            match result {
+                                Ok(s) => {
+                                    println!("{} {}", Tokens::String(s.clone()), s);
                                 }
-                                if t == '\"' {
-                                    terminated = true;
-                                    break;
+                                Err(_) => {
+                                    eprintln!("[line {}] Error: Unterminated string.", line);
+                                    println!("{}  null", Tokens::EOF);
+                                    std::process::exit(65);
                                 }
-                                string_literal.push(t);
-                            }
-                            if !terminated {
-                                eprintln!("[line {}] Error: Unterminated string.", line);
-                                println!("{}  null", Tokens::EOF);
-                                std::process::exit(65);
-                            } else {
-                                let s: String = string_literal.iter().collect();
-                                println!("{} {}", Tokens::String(s.clone()), s);
                             }
                         }
                         Ok(Tokens::Number(_)) => {
