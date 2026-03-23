@@ -31,10 +31,19 @@ fn main() {
             // TODO: Uncomment the code below to pass the first stage
             if !file_contents.is_empty() {
                 let tokens: Vec<&str> = file_contents.split("").collect();
-                for token in tokens.iter().filter(|t| **t != "") {
-                    // println!("{}", token);
+                let mut iter = tokens.iter().filter(|t| **t != "").peekable();
+                while let Some(token) = iter.next() {
                     match Tokens::from_str(token) {
-                        Ok(t) => println!("{} null", t),
+                        Ok(t) => {
+                            let next = iter.peek().map(|t| **t).unwrap_or("");
+                            match t.double_char_operator(next) {
+                                Some(t) => {
+                                    iter.next();
+                                    println!("{} null", t)
+                                }
+                                None => println!("{} null", t),
+                            }
+                        }
                         Err(e) => {
                             has_lexical_errors = true;
                             eprintln!("[line 1] Error: Unexpected character: {}", e);

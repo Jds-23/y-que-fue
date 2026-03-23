@@ -13,6 +13,14 @@ pub enum Tokens {
     Minus,
     Semicolon,
     Slash,
+    Equal,
+    EqualEqual,
+    Negate,
+    NotEqual,
+    LessThan,
+    LessThanEqual,
+    GreaterThan,
+    GreaterThanEqual,
     EOF
 }
 
@@ -30,7 +38,15 @@ impl fmt::Display for Tokens {
             Tokens::Minus=>write!(f,"MINUS -"),
             Tokens::Semicolon=>write!(f,"SEMICOLON ;"),
             Tokens::Slash=>write!(f,"SLASH /"),
-            Tokens::EOF=>write!(f,"EOF")
+            Tokens::Equal=>write!(f,"EQUAL ="),
+            Tokens::EqualEqual=>write!(f,"EQUAL_EQUAL =="),
+            Tokens::Negate=>write!(f,"NOT =="),
+            Tokens::NotEqual=>write!(f,"NOT_EQUAL !="),
+            Tokens::LessThan=>write!(f,"LESS_THAN <"),
+            Tokens::LessThanEqual=>write!(f,"LESS_THAN_EQUAL <="),
+            Tokens::GreaterThan=>write!(f,"GREATER_THAN >"),
+            Tokens::GreaterThanEqual=>write!(f,"GREATER_THAN_EQUAL >="),
+            Tokens::EOF=>write!(f,"EOF"),
         }
     }
 }
@@ -50,7 +66,47 @@ impl FromStr for Tokens {
             "-"=>Ok(Tokens::Minus),
             ";"=>Ok(Tokens::Semicolon),
             "/"=>Ok(Tokens::Slash),
+            "="=>Ok(Tokens::Equal),
+            "=="=>Ok(Tokens::EqualEqual),
+            "!"=>Ok(Tokens::Negate),
+            "!="=>Ok(Tokens::NotEqual),
+            "<"=>Ok(Tokens::LessThan),
+            "<="=>Ok(Tokens::LessThanEqual),
+            ">"=>Ok(Tokens::GreaterThan),
+            ">="=>Ok(Tokens::GreaterThanEqual),
             _=>Err(s.to_string()),
+        }
+    }
+}
+
+impl Tokens {
+    pub fn double_char_operator(&self,next: &str)-> Option<Tokens>{
+        match self {
+            Tokens::Equal=>{
+                match next {
+                    "="=>Some(Tokens::EqualEqual),
+                    _=>None
+                }
+            },
+            Tokens::Negate=>{
+                match next {
+                    "="=>Some(Tokens::NotEqual),
+                    _=>None
+                }
+            },
+            Tokens::LessThan=>{
+                match next {
+                    "="=>Some(Tokens::LessThanEqual),
+                    _=>None
+                }
+            },
+            Tokens::GreaterThan=>{
+                match next {
+                    "="=>Some(Tokens::GreaterThanEqual),
+                    _=>None
+                }
+            },
+            _=>None
         }
     }
 }
