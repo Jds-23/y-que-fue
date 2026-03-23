@@ -15,8 +15,8 @@ pub enum Tokens {
     Slash,
     Equal,
     EqualEqual,
-    Negate,
-    NotEqual,
+    Bang,
+    BangEqual,
     LessThan,
     LessThanEqual,
     GreaterThan,
@@ -40,8 +40,8 @@ impl fmt::Display for Tokens {
             Tokens::Slash=>write!(f,"SLASH /"),
             Tokens::Equal=>write!(f,"EQUAL ="),
             Tokens::EqualEqual=>write!(f,"EQUAL_EQUAL =="),
-            Tokens::Negate=>write!(f,"NOT =="),
-            Tokens::NotEqual=>write!(f,"NOT_EQUAL !="),
+            Tokens::Bang=>write!(f,"BANG !"),
+            Tokens::BangEqual=>write!(f,"BANG_EQUAL !="),
             Tokens::LessThan=>write!(f,"LESS_THAN <"),
             Tokens::LessThanEqual=>write!(f,"LESS_THAN_EQUAL <="),
             Tokens::GreaterThan=>write!(f,"GREATER_THAN >"),
@@ -68,8 +68,8 @@ impl FromStr for Tokens {
             "/"=>Ok(Tokens::Slash),
             "="=>Ok(Tokens::Equal),
             "=="=>Ok(Tokens::EqualEqual),
-            "!"=>Ok(Tokens::Negate),
-            "!="=>Ok(Tokens::NotEqual),
+            "!"=>Ok(Tokens::Bang),
+            "!="=>Ok(Tokens::BangEqual),
             "<"=>Ok(Tokens::LessThan),
             "<="=>Ok(Tokens::LessThanEqual),
             ">"=>Ok(Tokens::GreaterThan),
@@ -88,9 +88,9 @@ impl Tokens {
                     _=>None
                 }
             },
-            Tokens::Negate=>{
+            Tokens::Bang=>{
                 match next {
-                    "="=>Some(Tokens::NotEqual),
+                    "="=>Some(Tokens::BangEqual),
                     _=>None
                 }
             },
