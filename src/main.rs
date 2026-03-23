@@ -26,6 +26,7 @@ fn main() {
             if !file_contents.is_empty() {
                 panic!("Scanner not implemented");
             } else {
+                println!("{}", file_contents);
                 let tokens: Vec<&str> = file_contents.split("").collect();
                 for token in tokens {
                     match token {
