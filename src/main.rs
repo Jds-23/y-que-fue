@@ -88,23 +88,23 @@ fn main() {
                                     }
                                     _ => break,
                                 }
-                                let s: String = if after_decimal.is_empty() {
-                                    before_decimal.iter().collect()
-                                } else {
-                                    format!(
-                                        "{}.{}",
-                                        before_decimal.iter().collect::<String>(),
-                                        after_decimal.iter().collect::<String>(),
-                                    )
-                                };
-                                let n: f64 = s.parse().unwrap();
-                                let out = if n.fract() == 0.0 {
-                                    format!("{:.1}", n) // 3.0
-                                } else {
-                                    format!("{}", n) // 3.14 (keeps all decimals)
-                                };
-                                println!("{} {}", Tokens::Number(s), out);
                             }
+                            let s: String = if after_decimal.is_empty() {
+                                before_decimal.iter().collect()
+                            } else {
+                                format!(
+                                    "{}.{}",
+                                    before_decimal.iter().collect::<String>(),
+                                    after_decimal.iter().collect::<String>(),
+                                )
+                            };
+                            let n: f64 = s.parse().unwrap();
+                            let out = if n.fract() == 0.0 {
+                                format!("{:.1}", n) // 3.0
+                            } else {
+                                format!("{}", n) // 3.14 (keeps all decimals)
+                            };
+                            println!("{} {}", Tokens::Number(s), f.);
                         }
                         Ok(t) => {
                             let next = iter.peek().copied().unwrap_or('\0');
