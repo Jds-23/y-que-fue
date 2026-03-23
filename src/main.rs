@@ -32,7 +32,7 @@ fn main() {
                 let tokens: Vec<&str> = file_contents.split("").collect();
                 for token in tokens {
                     match Tokens::from_str(token) {
-                        Ok(t) => println!("{}  null", t),
+                        Ok(t) => println!("{} null", t),
                         Err(e) => eprintln!("[line 1] Error: Unexpected character: {}", e),
                     }
                 }
