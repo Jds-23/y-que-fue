@@ -1,6 +1,7 @@
 #![allow(unused_variables)]
 use std::env;
 use std::fs;
+use std::str::FromStr;
 
 mod lex;
 
@@ -45,7 +46,11 @@ fn main() {
                     };
                     if token.is_alphabetic() || token == '_' {
                         let i = extract_identifier(&mut iter, &token);
-                        println!("{} null", Tokens::Identifier(i));
+                        let token = Tokens::from_str(&i);
+                        match token {
+                            Ok(t) => println!("{} null", t),
+                            Err(s) => println!("{} null", Tokens::Identifier(s)),
+                        }
                         continue;
                     }
                     match Tokens::from_char(&token) {

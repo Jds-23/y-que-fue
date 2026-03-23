@@ -1,4 +1,4 @@
-use std::fmt;
+use std::{fmt, str::FromStr};
 
 #[derive(Debug)]
 pub enum Tokens {
@@ -26,7 +26,49 @@ pub enum Tokens {
     String(String),
     Number(String),
     Identifier(String),
+    // Keywords
+    And,
+    Class,
+    Else,
+    False,
+    For,
+    Fun,
+    If,
+    Nil,
+    Or,
+    Print,
+    Return,
+    Super,
+    This,
+    True,
+    Var,
+    While,
     EOF,
+}
+
+impl FromStr for Tokens {
+    type Err = String;
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        match s {
+            "and" => Ok(Tokens::And),
+            "class" => Ok(Tokens::Class),
+            "else" => Ok(Tokens::Else),
+            "false" => Ok(Tokens::False),
+            "for" => Ok(Tokens::For),
+            "fun" => Ok(Tokens::Fun),
+            "if" => Ok(Tokens::If),
+            "nil" => Ok(Tokens::Nil),
+            "or" => Ok(Tokens::Or),
+            "print" => Ok(Tokens::Print),
+            "return" => Ok(Tokens::Return),
+            "super" => Ok(Tokens::Super),
+            "this" => Ok(Tokens::This),
+            "true" => Ok(Tokens::True),
+            "var" => Ok(Tokens::Var),
+            "while" => Ok(Tokens::While),
+            _ => Err(s.to_string()),
+        }
+    }
 }
 
 impl fmt::Display for Tokens {
@@ -56,6 +98,22 @@ impl fmt::Display for Tokens {
             Tokens::String(literal) => write!(f, "STRING \"{}\"", literal),
             Tokens::Number(literal) => write!(f, "NUMBER {}", literal),
             Tokens::Identifier(identifier) => write!(f, "IDENTIFIER {}", identifier),
+            Tokens::And => write!(f, "AND and"),
+            Tokens::Class => write!(f, "CLASS class"),
+            Tokens::Else => write!(f, "ELSE else"),
+            Tokens::False => write!(f, "FALSE false"),
+            Tokens::For => write!(f, "FOR for"),
+            Tokens::Fun => write!(f, "FUN fun"),
+            Tokens::If => write!(f, "IF if"),
+            Tokens::Nil => write!(f, "NIL nil"),
+            Tokens::Or => write!(f, "OR or"),
+            Tokens::Print => write!(f, "PRINT print"),
+            Tokens::Return => write!(f, "RETURN return"),
+            Tokens::Super => write!(f, "SUPER super"),
+            Tokens::This => write!(f, "THIS this"),
+            Tokens::True => write!(f, "TRUE true"),
+            Tokens::Var => write!(f, "VAR var"),
+            Tokens::While => write!(f, "WHILE while"),
             Tokens::EOF => write!(f, "EOF"),
         }
     }
