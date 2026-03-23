@@ -6,6 +6,10 @@ pub enum Tokens {
     RightParen,
     LeftBraces,
     RightBraces,
+    Star,
+    Dot,
+    Comma,
+    Plus,
     EOF
 }
 
@@ -16,6 +20,10 @@ impl fmt::Display for Tokens {
             Tokens::RightParen=>write!(f,"RIGHT_PAREN )"),
             Tokens::LeftBraces=>write!(f,"LEFT_BRACE {{"),
             Tokens::RightBraces=>write!(f,"RIGHT_BRACE }}"),
+            Tokens::Star=>write!(f,"STAR }}"),
+            Tokens::Dot=>write!(f,"DOT }}"),
+            Tokens::Comma=>write!(f,"COMMA }}"),
+            Tokens::Plus=>write!(f,"PLUS }}"),
             Tokens::EOF=>write!(f,"EOF")
         }
     }
@@ -29,6 +37,10 @@ impl FromStr for Tokens {
             ")"=>Ok(Tokens::RightParen),
             "{"=>Ok(Tokens::LeftBraces),
             "}"=>Ok(Tokens::RightBraces),
+            "*"=>Ok(Tokens::Star),
+            "."=>Ok(Tokens::Dot),
+            ","=>Ok(Tokens::Comma),
+            "+"=>Ok(Tokens::Plus),
             _=>Err(s.to_string()),
         }
     }
