@@ -1,7 +1,5 @@
 use std::{fmt, str::FromStr};
 
-use anyhow::Ok;
-
 #[derive(Debug)]
 pub enum Tokens {
     LeftParen,
