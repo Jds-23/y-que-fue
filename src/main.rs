@@ -31,6 +31,7 @@ fn main() {
             if !file_contents.is_empty() {
                 let tokens: Vec<&str> = file_contents.split("").collect();
                 for token in tokens {
+                    print!("{}", token);
                     println!("{} null", Tokens::from_str(token).unwrap());
                 }
                 println!("{}  null", Tokens::EOF); // Placeholder, replace this line when implementing the scanner
