@@ -1,6 +1,7 @@
 #![allow(unused_variables)]
 use std::env;
 use std::fs;
+use std::str::FromStr;
 
 mod lex;
 
@@ -30,17 +31,7 @@ fn main() {
             if !file_contents.is_empty() {
                 let tokens: Vec<&str> = file_contents.split("").collect();
                 for token in tokens {
-                    match token {
-                        "(" => {
-                            println!("{} null", Tokens::LeftParen);
-                        }
-                        ")" => {
-                            println!("{} null", Tokens::RightParen);
-                        }
-                        _ => {
-                            eprintln!("Unknown token: {}", token);
-                        }
-                    }
+                    println!("{} null", Tokens::from_str(token).unwrap());
                 }
                 println!("{}  null", Tokens::EOF); // Placeholder, replace this line when implementing the scanner
             } else {
