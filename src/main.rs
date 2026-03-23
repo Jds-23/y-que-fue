@@ -57,6 +57,7 @@ fn main() {
                             }
                             if !terminated {
                                 eprintln!("[line {}] Error:  Unterminated string.", line);
+                                std::process::exit(65);
                             } else {
                                 let s: String = string_literal.iter().collect();
                                 println!("{} {}", Tokens::String(s.clone()), s);
