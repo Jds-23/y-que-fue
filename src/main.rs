@@ -36,10 +36,8 @@ fn main() {
                         Err(e) => eprintln!("[line 1] Error: Unexpected character: {}", e),
                     }
                 }
-                println!("{}  null", Tokens::EOF); // Placeholder, replace this line when implementing the scanner
-            } else {
-                println!("{}  null", Tokens::EOF); // Placeholder, replace this line when implementing the scanner
             }
+            println!("{}  null", Tokens::EOF); // Placeholder, replace this line when implementing the scanner
         }
         _ => {
             eprintln!("Unknown command: {}", command);
