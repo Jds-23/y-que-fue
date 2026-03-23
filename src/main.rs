@@ -104,7 +104,7 @@ fn main() {
                             } else {
                                 format!("{}", n) // 3.14 (keeps all decimals)
                             };
-                            println!("{} {}", Tokens::Number(s), f.);
+                            println!("{} {}", Tokens::Number(s), out);
                         }
                         Ok(t) => {
                             let next = iter.peek().copied().unwrap_or('\0');
