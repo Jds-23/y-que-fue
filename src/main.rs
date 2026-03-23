@@ -5,6 +5,7 @@ use std::fs;
 mod lex;
 
 use crate::lex::lex::Tokens;
+use crate::lex::number::extract_number_literal;
 use crate::lex::string::extract_string_literal;
 
 fn main() {
@@ -56,56 +57,22 @@ fn main() {
                             }
                         }
                         Ok(Tokens::Number(_)) => {
-                            let mut before_decimal: Vec<char> = vec![];
-                            let mut after_decimal: Vec<char> = vec![];
-                            before_decimal.push(token);
-                            while let Some(t) = iter.peek() {
-                                match t {
-                                    '0'..='9' => {
-                                        before_decimal.push(*t);
-                                        iter.next();
-                                    }
-                                    '.' => {
-                                        iter.next();
-                                        while let Some(t) = iter.peek() {
-                                            match t {
-                                                '0'..='9' => {
-                                                    after_decimal.push(*t);
-                                                    iter.next();
-                                                }
-                                                '.' => {
-                                                    eprintln!(
-                                                        "[line {}] Error: Unexpected character.",
-                                                        line
-                                                    );
-                                                    std::process::exit(65);
-                                                }
-                                                _ => break,
-                                            }
-                                        }
-                                        break;
-                                    }
-                                    _ => {
-                                        break;
-                                    }
+                            let s = extract_number_literal(&mut iter, &token);
+                            match s {
+                                Some(s) => {
+                                    let n: f64 = s.parse().unwrap();
+                                    let out = if n.fract() == 0.0 {
+                                        format!("{:.1}", n) // 3.0
+                                    } else {
+                                        format!("{}", n) // 3.14 (keeps all decimals)
+                                    };
+                                    println!("{} {}", Tokens::Number(s), out);
+                                }
+                                None => {
+                                    eprintln!("[line {}] Error: Unexpected character.", line);
+                                    std::process::exit(65);
                                 }
                             }
-                            let s: String = if after_decimal.is_empty() {
-                                before_decimal.iter().collect()
-                            } else {
-                                format!(
-                                    "{}.{}",
-                                    before_decimal.iter().collect::<String>(),
-                                    after_decimal.iter().collect::<String>(),
-                                )
-                            };
-                            let n: f64 = s.parse().unwrap();
-                            let out = if n.fract() == 0.0 {
-                                format!("{:.1}", n) // 3.0
-                            } else {
-                                format!("{}", n) // 3.14 (keeps all decimals)
-                            };
-                            println!("{} {}", Tokens::Number(s), out);
                         }
                         Ok(t) => {
                             let next = iter.peek().copied().unwrap_or('\0');
