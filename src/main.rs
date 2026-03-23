@@ -2,6 +2,10 @@
 use std::env;
 use std::fs;
 
+mod lex;
+
+use crate::lex::lex::Tokens;
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 {
@@ -28,19 +32,19 @@ fn main() {
                 for token in tokens {
                     match token {
                         "(" => {
-                            println!("LEFT_PAREN ( null");
+                            println!("{} null", Tokens::LeftParen);
                         }
                         ")" => {
-                            println!("RIGHT_PAREN ) null");
+                            println!("{} null", Tokens::RightParen);
                         }
                         _ => {
                             eprintln!("Unknown token: {}", token);
                         }
                     }
                 }
-                println!("EOF  null"); // Placeholder, replace this line when implementing the scanner
+                println!("{}  null", Tokens::EOF); // Placeholder, replace this line when implementing the scanner
             } else {
-                println!("EOF  null"); // Placeholder, replace this line when implementing the scanner
+                println!("{}  null", Tokens::EOF); // Placeholder, replace this line when implementing the scanner
             }
         }
         _ => {
