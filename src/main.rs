@@ -67,13 +67,20 @@ fn main() {
                             let mut before_decimal: Vec<char> = vec![];
                             let mut after_decimal: Vec<char> = vec![];
                             before_decimal.push(token);
-                            while let Some(t) = iter.next() {
+                            while let Some(t) = iter.peek() {
                                 match t {
-                                    '0'..='9' => before_decimal.push(t),
+                                    '0'..='9' => {
+                                        iter.next();
+                                        before_decimal.push(*t);
+                                    }
                                     '.' => {
-                                        while let Some(t) = iter.next() {
+                                        iter.next();
+                                        while let Some(t) = iter.peek() {
                                             match t {
-                                                '0'..='9' => after_decimal.push(t),
+                                                '0'..='9' => {
+                                                    after_decimal.push(*t);
+                                                    iter.next();
+                                                }
                                                 '.' => {
                                                     eprintln!(
                                                         "[line {}] Error: Unexpected character.",
@@ -84,9 +91,11 @@ fn main() {
                                                 _ => break,
                                             }
                                         }
-                                        continue;
+                                        break;
                                     }
-                                    _ => continue,
+                                    _ => {
+                                        break;
+                                    }
                                 }
                             }
                             let s: String = if after_decimal.is_empty() {
