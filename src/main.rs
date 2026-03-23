@@ -88,14 +88,22 @@ fn main() {
                                     }
                                     _ => break,
                                 }
-                                let s: String = [
-                                    before_decimal.iter().collect(),
-                                    ".".to_string(),
-                                    after_decimal.iter().collect(),
-                                ]
-                                .join("");
-                                let f: f64 = s.parse().unwrap();
-                                println!("{} {}", Tokens::Number(s), f);
+                                let s: String = if after_decimal.is_empty() {
+                                    before_decimal.iter().collect()
+                                } else {
+                                    format!(
+                                        "{}.{}",
+                                        before_decimal.iter().collect::<String>(),
+                                        after_decimal.iter().collect::<String>(),
+                                    )
+                                };
+                                let n: f64 = s.parse().unwrap();
+                                let out = if n.fract() == 0.0 {
+                                    format!("{:.1}", n) // 3.0
+                                } else {
+                                    format!("{}", n) // 3.14 (keeps all decimals)
+                                };
+                                println!("{} {}", Tokens::Number(s), out);
                             }
                         }
                         Ok(t) => {
