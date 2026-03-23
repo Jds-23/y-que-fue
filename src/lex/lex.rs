@@ -10,6 +10,9 @@ pub enum Tokens {
     Dot,
     Comma,
     Plus,
+    Minus,
+    Semicolon,
+    Slash,
     EOF
 }
 
@@ -24,6 +27,9 @@ impl fmt::Display for Tokens {
             Tokens::Dot=>write!(f,"DOT ."),
             Tokens::Comma=>write!(f,"COMMA ,"),
             Tokens::Plus=>write!(f,"PLUS +"),
+            Tokens::Minus=>write!(f,"MINUS -"),
+            Tokens::Semicolon=>write!(f,"SEMICOLON ;"),
+            Tokens::Slash=>write!(f,"SLASH /"),
             Tokens::EOF=>write!(f,"EOF")
         }
     }
@@ -41,6 +47,9 @@ impl FromStr for Tokens {
             "."=>Ok(Tokens::Dot),
             ","=>Ok(Tokens::Comma),
             "+"=>Ok(Tokens::Plus),
+            "-"=>Ok(Tokens::Minus),
+            ";"=>Ok(Tokens::Semicolon),
+            "/"=>Ok(Tokens::Slash),
             _=>Err(s.to_string()),
         }
     }
