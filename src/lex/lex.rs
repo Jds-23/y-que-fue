@@ -17,10 +17,10 @@ pub enum Tokens {
     EqualEqual,
     Bang,
     BangEqual,
-    LessThan,
-    LessThanEqual,
-    GreaterThan,
-    GreaterThanEqual,
+    Less,
+    LessEqual,
+    Greater,
+    GreaterEqual,
     EOF
 }
 
@@ -42,10 +42,10 @@ impl fmt::Display for Tokens {
             Tokens::EqualEqual=>write!(f,"EQUAL_EQUAL =="),
             Tokens::Bang=>write!(f,"BANG !"),
             Tokens::BangEqual=>write!(f,"BANG_EQUAL !="),
-            Tokens::LessThan=>write!(f,"LESS_THAN <"),
-            Tokens::LessThanEqual=>write!(f,"LESS_THAN_EQUAL <="),
-            Tokens::GreaterThan=>write!(f,"GREATER_THAN >"),
-            Tokens::GreaterThanEqual=>write!(f,"GREATER_THAN_EQUAL >="),
+            Tokens::Less=>write!(f,"LESS <"),
+            Tokens::LessEqual=>write!(f,"LESS_EQUAL <="),
+            Tokens::Greater=>write!(f,"GREATER >"),
+            Tokens::GreaterEqual=>write!(f,"GREATER_EQUAL >="),
             Tokens::EOF=>write!(f,"EOF"),
         }
     }
@@ -70,10 +70,10 @@ impl FromStr for Tokens {
             "=="=>Ok(Tokens::EqualEqual),
             "!"=>Ok(Tokens::Bang),
             "!="=>Ok(Tokens::BangEqual),
-            "<"=>Ok(Tokens::LessThan),
-            "<="=>Ok(Tokens::LessThanEqual),
-            ">"=>Ok(Tokens::GreaterThan),
-            ">="=>Ok(Tokens::GreaterThanEqual),
+            "<"=>Ok(Tokens::Less),
+            "<="=>Ok(Tokens::LessEqual),
+            ">"=>Ok(Tokens::Greater),
+            ">="=>Ok(Tokens::GreaterEqual),
             _=>Err(s.to_string()),
         }
     }
@@ -94,15 +94,15 @@ impl Tokens {
                     _=>None
                 }
             },
-            Tokens::LessThan=>{
+            Tokens::Less=>{
                 match next {
-                    "="=>Some(Tokens::LessThanEqual),
+                    "="=>Some(Tokens::LessEqual),
                     _=>None
                 }
             },
-            Tokens::GreaterThan=>{
+            Tokens::Greater=>{
                 match next {
-                    "="=>Some(Tokens::GreaterThanEqual),
+                    "="=>Some(Tokens::GreaterEqual),
                     _=>None
                 }
             },
