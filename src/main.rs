@@ -32,7 +32,12 @@ fn main() {
             if !file_contents.is_empty() {
                 // let tokens: Vec<&str> = file_contents.split("").collect();
                 let mut iter = file_contents.chars().peekable();
+                let mut line = 1;
                 while let Some(token) = iter.next() {
+                    if token == '\n' {
+                        line += 1;
+                        continue;
+                    }
                     if token.is_whitespace() {
                         continue;
                     };
@@ -43,6 +48,7 @@ fn main() {
                                 Some(Tokens::DoubleSlash) => {
                                     while let Some(t) = iter.next() {
                                         if t == '\n' {
+                                            line += 1;
                                             break;
                                         }
                                     }
@@ -56,7 +62,7 @@ fn main() {
                         }
                         Err(e) => {
                             has_lexical_errors = true;
-                            eprintln!("[line 1] Error: Unexpected character: {}", e);
+                            eprintln!("[line {}] Error: Unexpected character: {}", line, e);
                         }
                     }
                 }
