@@ -20,10 +20,10 @@ impl fmt::Display for Tokens {
             Tokens::RightParen=>write!(f,"RIGHT_PAREN )"),
             Tokens::LeftBraces=>write!(f,"LEFT_BRACE {{"),
             Tokens::RightBraces=>write!(f,"RIGHT_BRACE }}"),
-            Tokens::Star=>write!(f,"STAR }}"),
-            Tokens::Dot=>write!(f,"DOT }}"),
-            Tokens::Comma=>write!(f,"COMMA }}"),
-            Tokens::Plus=>write!(f,"PLUS }}"),
+            Tokens::Star=>write!(f,"STAR *"),
+            Tokens::Dot=>write!(f,"DOT ."),
+            Tokens::Comma=>write!(f,"COMMA ,"),
+            Tokens::Plus=>write!(f,"PLUS +"),
             Tokens::EOF=>write!(f,"EOF")
         }
     }
