@@ -27,6 +27,7 @@ fn main() {
                 String::new()
             });
 
+            let mut has_lexical_errors = false;
             // TODO: Uncomment the code below to pass the first stage
             if !file_contents.is_empty() {
                 let tokens: Vec<&str> = file_contents.split("").collect();
@@ -34,11 +35,18 @@ fn main() {
                     // println!("{}", token);
                     match Tokens::from_str(token) {
                         Ok(t) => println!("{} null", t),
-                        Err(e) => println!("[line 1] Error: Unexpected character: {}", e),
+                        Err(e) => {
+                            has_lexical_errors = true;
+                            println!("[line 1] Error: Unexpected character: {}", e);
+                        }
                     }
                 }
             }
             println!("{}  null", Tokens::EOF); // Placeholder, replace this line when implementing the scanner
+
+            if has_lexical_errors {
+                std::process::exit(65);
+            }
         }
         _ => {
             eprintln!("Unknown command: {}", command);
