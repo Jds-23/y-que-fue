@@ -30,16 +30,19 @@ fn main() {
             let mut has_lexical_errors = false;
             // TODO: Uncomment the code below to pass the first stage
             if !file_contents.is_empty() {
-                let tokens: Vec<&str> = file_contents.split("").collect();
-                let mut iter = tokens.iter().filter(|t| **t != "").peekable();
+                // let tokens: Vec<&str> = file_contents.split("").collect();
+                let mut iter = file_contents.chars().peekable();
                 while let Some(token) = iter.next() {
-                    match Tokens::from_str(token) {
+                    if token.is_whitespace() {
+                        continue;
+                    };
+                    match Tokens::from_str(&token.to_string()) {
                         Ok(t) => {
-                            let next = iter.peek().map(|t| **t).unwrap_or("");
+                            let next = iter.peek().copied().unwrap_or('\0');
                             match t.double_char_operator(next) {
                                 Some(Tokens::DoubleSlash) => {
                                     while let Some(t) = iter.next() {
-                                        if *t == "/n" {
+                                        if t == '\n' {
                                             break;
                                         }
                                     }

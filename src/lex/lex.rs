@@ -83,26 +83,26 @@ impl FromStr for Tokens {
 }
 
 impl Tokens {
-    pub fn double_char_operator(&self, next: &str) -> Option<Tokens> {
+    pub fn double_char_operator(&self, next: char) -> Option<Tokens> {
         match self {
             Tokens::Equal => match next {
-                "=" => Some(Tokens::EqualEqual),
+                '=' => Some(Tokens::EqualEqual),
                 _ => None,
             },
             Tokens::Bang => match next {
-                "=" => Some(Tokens::BangEqual),
+                '=' => Some(Tokens::BangEqual),
                 _ => None,
             },
             Tokens::Less => match next {
-                "=" => Some(Tokens::LessEqual),
+                '=' => Some(Tokens::LessEqual),
                 _ => None,
             },
             Tokens::Greater => match next {
-                "=" => Some(Tokens::GreaterEqual),
+                '=' => Some(Tokens::GreaterEqual),
                 _ => None,
             },
             Tokens::Slash => match next {
-                "/" => Some(Tokens::DoubleSlash),
+                '/' => Some(Tokens::DoubleSlash),
                 _ => None,
             },
             _ => None,
