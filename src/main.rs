@@ -3,6 +3,7 @@ use std::env;
 
 mod commands;
 mod lexer;
+mod parser;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
