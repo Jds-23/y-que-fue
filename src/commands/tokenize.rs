@@ -6,6 +6,7 @@ use crate::lexer::identifier::extract_identifier;
 use crate::lexer::number::extract_number_literal;
 use crate::lexer::string::extract_string_literal;
 use crate::lexer::token::Token;
+use crate::literal::Literal;
 
 pub fn run(filename: &str) {
     eprintln!("Logs from your program will appear here!");
@@ -32,16 +33,7 @@ pub fn run(filename: &str) {
     // Print all tokens
     for t in &tokens {
         match t {
-            Token::String(s) => println!("{} {}", t, s),
-            Token::Number(s) => {
-                let n: f64 = s.parse().unwrap();
-                let out = if n.fract() == 0.0 {
-                    format!("{:.1}", n)
-                } else {
-                    format!("{}", n)
-                };
-                println!("{} {}", t, out);
-            }
+            Token::Literal(_) => println!("{}", t),
             _ => println!("{} null", t),
         }
     }
@@ -81,17 +73,17 @@ pub fn tokenize(file_contents: &str) -> (Vec<Token>, Vec<LexError>) {
                 Ok(Token::StringQuote) => {
                     let result = extract_string_literal(&mut iter, &mut line);
                     match result {
-                        Ok(s) => tokens.push(Token::String(s)),
+                        Ok(s) => tokens.push(Token::Literal(Literal::String(s))),
                         Err(_) => {
                             errors.push(LexError::UnterminatedString { line });
                             break;
                         }
                     }
                 }
-                Ok(Token::Number(_)) => {
+                Ok(Token::Literal(Literal::Number(_))) => {
                     let s = extract_number_literal(&mut iter, &token);
                     match s {
-                        Some(s) => tokens.push(Token::Number(s)),
+                        Some(s) => tokens.push(Token::Literal(Literal::Number(s))),
                         None => {
                             errors.push(LexError::UnexpectedCharacter { line, ch: token });
                             break;
