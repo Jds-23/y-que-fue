@@ -1,6 +1,6 @@
 use std::fs;
-use std::str::FromStr;
 
+use crate::commands::tokenize::tokenize;
 use crate::lexer::token::Token;
 
 pub fn run(filename: &str) {
@@ -9,20 +9,23 @@ pub fn run(filename: &str) {
         String::new()
     });
     if !file_contents.is_empty() {
-        match Token::from_str(&file_contents) {
-            Ok(Token::True) => println!("{}", true),
-            Ok(Token::False) => println!("{}", false),
-            Ok(Token::Nil) => println!("nil"),
-            Err(s) => {
-                let n: f64 = s.parse().unwrap();
-                let out = if n.fract() == 0.0 {
-                    format!("{:.1}", n)
-                } else {
-                    format!("{}", n)
-                };
-                println!("{}", out);
+        let tokens = tokenize(&file_contents).0;
+        for token in tokens {
+            match token {
+                Token::True => println!("{}", true),
+                Token::False => println!("{}", false),
+                Token::Nil => println!("nil"),
+                Token::Number(s) => {
+                    let n: f64 = s.parse().unwrap();
+                    let out = if n.fract() == 0.0 {
+                        format!("{:.1}", n)
+                    } else {
+                        format!("{}", n)
+                    };
+                    println!("{}", out);
+                }
+                _ => {}
             }
-            _ => {}
         }
     }
 }
