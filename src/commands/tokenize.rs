@@ -30,13 +30,13 @@ pub fn run(filename: &str) {
     }
 
     // Fatal error (unterminated string) → print EOF and exit
-    let has_fatal = errors
-        .iter()
-        .any(|e| matches!(e, LexError::UnterminatedString { .. }));
-    if has_fatal {
-        println!("{}  null", Token::EOF);
-        std::process::exit(65);
-    }
+    // let has_fatal = errors
+    //     .iter()
+    //     .any(|e| matches!(e, LexError::UnterminatedString { .. }));
+    // if has_fatal {
+    //     println!("{}  null", Token::EOF);
+    //     std::process::exit(65);
+    // }
 
     // Print all tokens
     for t in &tokens {
