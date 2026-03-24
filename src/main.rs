@@ -3,6 +3,7 @@ use std::env;
 
 mod commands;
 mod lexer;
+mod literal;
 mod parser;
 
 fn main() {

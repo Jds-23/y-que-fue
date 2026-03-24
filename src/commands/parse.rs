@@ -3,7 +3,8 @@ use std::iter::Peekable;
 
 use crate::commands::tokenize::tokenize;
 use crate::lexer::token::Token;
-use crate::parser::expression::{Expr, Literal};
+use crate::literal::Literal;
+use crate::parser::expression::Expr;
 
 pub fn run(filename: &str) {
     let file_contents = fs::read_to_string(filename).unwrap_or_else(|_| {
