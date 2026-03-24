@@ -40,6 +40,16 @@ impl fmt::Display for Expr {
                 first,
                 second,
             } => write!(f, "(/ {} {})", first, second),
+            Expr::Binary {
+                op: Token::Minus,
+                first,
+                second,
+            } => write!(f, "(- {} {})", first, second),
+            Expr::Binary {
+                op: Token::Plus,
+                first,
+                second,
+            } => write!(f, "(+ {} {})", first, second),
             _ => todo!(),
         }
     }

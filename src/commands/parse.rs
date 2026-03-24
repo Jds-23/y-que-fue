@@ -21,7 +21,7 @@ pub fn parse(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
     let mut expr = parse_primary(iter);
     loop {
         match iter.peek() {
-            Some(Token::Star) | Some(Token::Slash) => {
+            Some(Token::Star) | Some(Token::Slash) | Some(Token::Minus) | Some(Token::Plus) => {
                 let op = iter.next().unwrap();
                 let right = parse_primary(iter);
                 expr = Expr::Binary {
