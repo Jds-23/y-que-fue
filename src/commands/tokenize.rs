@@ -32,13 +32,10 @@ pub fn run(filename: &str) {
 
     // Print all tokens
     for t in &tokens {
-        match t {
-            Token::Literal(_) => println!("{}", t),
-            _ => println!("{} null", t),
-        }
+        println!("{}", t);
     }
 
-    println!("{}  null", Token::EOF);
+    println!("{}", Token::EOF);
 
     if !errors.is_empty() {
         std::process::exit(65);
