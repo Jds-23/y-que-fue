@@ -22,8 +22,6 @@ pub fn extract_number_literal(
                         }
                         '.' => {
                             return None;
-                            // eprintln!("[line {}] Error: Unexpected character.", line);
-                            // std::process::exit(65);
                         }
                         _ => break,
                     }
