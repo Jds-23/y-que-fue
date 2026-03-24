@@ -24,6 +24,7 @@ pub fn run(filename: &str) {
                     };
                     println!("{}", out);
                 }
+                Token::String(s) => print!("{}", s),
                 _ => {}
             }
         }
