@@ -116,6 +116,21 @@ fn main() {
                 std::process::exit(65);
             }
         }
+        "parse" => {
+            let file_contents = fs::read_to_string(filename).unwrap_or_else(|_| {
+                eprintln!("Unable to read {}", filename);
+                String::new()
+            });
+            if !file_contents.is_empty() {
+                println!("{}", file_contents);
+                // match file_contents {
+                //     "true" => println!("{}", true),
+                //     "false" => println!("{}", false),
+                //     "nil" => println!("nil"),
+                //     _ => {}
+                // }
+            }
+        }
         _ => {
             eprintln!("Unknown command: {}", command);
         }
