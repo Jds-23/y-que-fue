@@ -18,45 +18,45 @@ pub fn run(filename: &str) {
 }
 
 pub fn parse(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
-    let expr = match iter.next() {
+    let mut expr = parse_primary(iter);
+    loop {
+        match iter.peek() {
+            Some(Token::Star) | Some(Token::Slash) => {
+                let op = iter.next().unwrap();
+                let right = parse_primary(iter);
+                expr = Expr::Binary {
+                    op,
+                    first: Box::new(expr),
+                    second: Box::new(right),
+                };
+            }
+            _ => break,
+        }
+    }
+    expr
+}
+
+fn parse_primary(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
+    match iter.next() {
         Some(Token::Literal(l)) => Expr::Literal(l),
         Some(Token::LeftParen) => {
             let group_expr = parse(iter);
             Expr::Grouping(Box::new(group_expr))
         }
         Some(Token::Minus) => {
-            let group_expr = parse(iter);
+            let right = parse_primary(iter);
             Expr::Unary {
-                expr: Box::new(group_expr),
+                expr: Box::new(right),
                 prefix: Token::Minus,
             }
         }
         Some(Token::Bang) => {
-            let group_expr = parse(iter);
+            let right = parse_primary(iter);
             Expr::Unary {
-                expr: Box::new(group_expr),
+                expr: Box::new(right),
                 prefix: Token::Bang,
             }
         }
         _ => todo!(),
-    };
-    match iter.peek() {
-        Some(Token::Star) => {
-            iter.next();
-            Expr::Binary {
-                op: Token::Star,
-                first: Box::new(expr),
-                second: Box::new(parse(iter)),
-            }
-        }
-        Some(Token::Slash) => {
-            iter.next();
-            Expr::Binary {
-                op: Token::Slash,
-                first: Box::new(expr),
-                second: Box::new(parse(iter)),
-            }
-        }
-        _ => expr,
     }
 }
