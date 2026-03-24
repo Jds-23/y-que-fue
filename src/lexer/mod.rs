@@ -1,3 +1,4 @@
+pub mod error;
 pub mod identifier;
 pub mod number;
 pub mod string;

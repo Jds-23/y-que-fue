@@ -1,6 +1,7 @@
 use std::fs;
 use std::str::FromStr;
 
+use crate::lexer::error::LexError;
 use crate::lexer::identifier::extract_identifier;
 use crate::lexer::number::extract_number_literal;
 use crate::lexer::string::extract_string_literal;
@@ -14,7 +15,57 @@ pub fn run(filename: &str) {
         String::new()
     });
 
-    let mut has_lexical_errors = false;
+    let (tokens, errors) = tokenize(&file_contents);
+
+    // Print errors to stderr
+    for err in &errors {
+        match err {
+            LexError::UnterminatedString { line } => {
+                eprintln!("[line {}] Error: Unterminated string.", line);
+            }
+            LexError::UnexpectedCharacter { line, ch } => {
+                eprintln!("[line {}] Error: Unexpected character: {}", line, ch);
+            }
+        }
+    }
+
+    // Fatal error (unterminated string) → print EOF and exit
+    let has_fatal = errors
+        .iter()
+        .any(|e| matches!(e, LexError::UnterminatedString { .. }));
+    if has_fatal {
+        println!("{}  null", Token::EOF);
+        std::process::exit(65);
+    }
+
+    // Print all tokens
+    for t in &tokens {
+        match t {
+            Token::String(s) => println!("{} {}", t, s),
+            Token::Number(s) => {
+                let n: f64 = s.parse().unwrap();
+                let out = if n.fract() == 0.0 {
+                    format!("{:.1}", n)
+                } else {
+                    format!("{}", n)
+                };
+                println!("{} {}", t, out);
+            }
+            _ => println!("{} null", t),
+        }
+    }
+
+    println!("{}  null", Token::EOF);
+
+    if !errors.is_empty() {
+        std::process::exit(65);
+    }
+}
+
+pub fn tokenize(file_contents: &str) -> (Vec<Token>, Vec<LexError>) {
+    let mut tokens: Vec<Token> = vec![];
+    let mut errors: Vec<LexError> = vec![];
+
     if !file_contents.is_empty() {
         let mut iter = file_contents.chars().peekable();
         let mut line = 1;
@@ -25,13 +76,13 @@ pub fn run(filename: &str) {
             }
             if token.is_whitespace() {
                 continue;
-            };
+            }
             if token.is_alphabetic() || token == '_' {
                 let i = extract_identifier(&mut iter, &token);
                 let token = Token::from_str(&i);
                 match token {
-                    Ok(t) => println!("{} null", t),
-                    Err(s) => println!("{} null", Token::Identifier(s)),
+                    Ok(t) => tokens.push(t),
+                    Err(s) => tokens.push(Token::Identifier(s)),
                 }
                 continue;
             }
@@ -39,31 +90,20 @@ pub fn run(filename: &str) {
                 Ok(Token::StringQuote) => {
                     let result = extract_string_literal(&mut iter, &mut line);
                     match result {
-                        Ok(s) => {
-                            println!("{} {}", Token::String(s.clone()), s);
-                        }
+                        Ok(s) => tokens.push(Token::String(s)),
                         Err(_) => {
-                            eprintln!("[line {}] Error: Unterminated string.", line);
-                            println!("{}  null", Token::EOF);
-                            std::process::exit(65);
+                            errors.push(LexError::UnterminatedString { line });
+                            break;
                         }
                     }
                 }
                 Ok(Token::Number(_)) => {
                     let s = extract_number_literal(&mut iter, &token);
                     match s {
-                        Some(s) => {
-                            let n: f64 = s.parse().unwrap();
-                            let out = if n.fract() == 0.0 {
-                                format!("{:.1}", n)
-                            } else {
-                                format!("{}", n)
-                            };
-                            println!("{} {}", Token::Number(s), out);
-                        }
+                        Some(s) => tokens.push(Token::Number(s)),
                         None => {
-                            eprintln!("[line {}] Error: Unexpected character.", line);
-                            std::process::exit(65);
+                            errors.push(LexError::UnexpectedCharacter { line, ch: token });
+                            break;
                         }
                     }
                 }
@@ -80,21 +120,17 @@ pub fn run(filename: &str) {
                         }
                         Some(t) => {
                             iter.next();
-                            println!("{} null", t)
+                            tokens.push(t);
                         }
-                        None => println!("{} null", t),
+                        None => tokens.push(t),
                     }
                 }
                 Err(e) => {
-                    has_lexical_errors = true;
-                    eprintln!("[line {}] Error: Unexpected character: {}", line, e);
+                    errors.push(LexError::UnexpectedCharacter { line, ch: e });
                 }
             }
         }
     }
-    println!("{}  null", Token::EOF);
 
-    if has_lexical_errors {
-        std::process::exit(65);
-    }
+    (tokens, errors)
 }
