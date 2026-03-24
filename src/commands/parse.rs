@@ -24,6 +24,20 @@ pub fn parse(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
             let group_expr = parse(iter);
             Expr::Grouping(Box::new(group_expr))
         }
+        Some(Token::Minus) => {
+            let group_expr = parse(iter);
+            Expr::Unary {
+                expr: Box::new(group_expr),
+                prefix: Token::Minus,
+            }
+        }
+        Some(Token::Bang) => {
+            let group_expr = parse(iter);
+            Expr::Unary {
+                expr: Box::new(group_expr),
+                prefix: Token::Bang,
+            }
+        }
         _ => todo!(),
     }
 }
