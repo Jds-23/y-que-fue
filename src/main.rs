@@ -122,13 +122,22 @@ fn main() {
                 String::new()
             });
             if !file_contents.is_empty() {
-                println!("{}", file_contents);
-                // match file_contents {
-                //     "true" => println!("{}", true),
-                //     "false" => println!("{}", false),
-                //     "nil" => println!("nil"),
-                //     _ => {}
-                // }
+                // println!("{}", file_contents);
+                match Tokens::from_str(&file_contents) {
+                    Ok(Tokens::True) => println!("{}", true),
+                    Ok(Tokens::False) => println!("{}", false),
+                    Ok(Tokens::Nil) => println!("nil"),
+                    Err(s) => {
+                        let n: f64 = s.parse().unwrap();
+                        let out = if n.fract() == 0.0 {
+                            format!("{:.1}", n) // 3.0
+                        } else {
+                            format!("{}", n) // 3.14 (keeps all decimals)
+                        };
+                        println!("{}", out);
+                    }
+                    _ => {}
+                }
             }
         }
         _ => {
