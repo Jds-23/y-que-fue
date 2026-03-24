@@ -18,10 +18,29 @@ pub fn run(filename: &str) {
 }
 
 pub fn parse(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
+    let mut expr = parse_multiplicative(iter);
+    loop {
+        match iter.peek() {
+            Some(Token::Minus) | Some(Token::Plus) => {
+                let op = iter.next().unwrap();
+                let right = parse_multiplicative(iter);
+                expr = Expr::Binary {
+                    op,
+                    first: Box::new(expr),
+                    second: Box::new(right),
+                };
+            }
+            _ => break,
+        }
+    }
+    expr
+}
+
+fn parse_multiplicative(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
     let mut expr = parse_primary(iter);
     loop {
         match iter.peek() {
-            Some(Token::Star) | Some(Token::Slash) | Some(Token::Minus) | Some(Token::Plus) => {
+            Some(Token::Star) | Some(Token::Slash) => {
                 let op = iter.next().unwrap();
                 let right = parse_primary(iter);
                 expr = Expr::Binary {
