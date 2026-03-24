@@ -18,7 +18,7 @@ pub fn run(filename: &str) {
 }
 
 pub fn parse(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
-    match iter.next() {
+    let expr = match iter.next() {
         Some(Token::Literal(l)) => Expr::Literal(l),
         Some(Token::LeftParen) => {
             let group_expr = parse(iter);
@@ -39,5 +39,24 @@ pub fn parse(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
             }
         }
         _ => todo!(),
+    };
+    match iter.peek() {
+        Some(Token::Star) => {
+            iter.next();
+            Expr::Binary {
+                op: Token::Star,
+                first: Box::new(expr),
+                second: Box::new(parse(iter)),
+            }
+        }
+        Some(Token::Slash) => {
+            iter.next();
+            Expr::Binary {
+                op: Token::Slash,
+                first: Box::new(expr),
+                second: Box::new(parse(iter)),
+            }
+        }
+        _ => expr,
     }
 }

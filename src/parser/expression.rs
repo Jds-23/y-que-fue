@@ -6,7 +6,15 @@ use crate::{lexer::token::Token, literal::Literal};
 pub enum Expr {
     Literal(Literal),
     Grouping(Box<Expr>),
-    Unary { prefix: Token, expr: Box<Expr> },
+    Unary {
+        prefix: Token,
+        expr: Box<Expr>,
+    },
+    Binary {
+        op: Token,
+        first: Box<Expr>,
+        second: Box<Expr>,
+    },
 }
 
 impl fmt::Display for Expr {
@@ -22,6 +30,16 @@ impl fmt::Display for Expr {
                 prefix: Token::Bang,
                 expr,
             } => write!(f, "(! {})", expr),
+            Expr::Binary {
+                op: Token::Star,
+                first,
+                second,
+            } => write!(f, "(* {} {})", first, second),
+            Expr::Binary {
+                op: Token::Slash,
+                first,
+                second,
+            } => write!(f, "(/ {} {})", first, second),
             _ => todo!(),
         }
     }
