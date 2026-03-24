@@ -106,7 +106,7 @@ impl fmt::Display for Token {
                     true => write!(f, "TRUE {} null", literal),
                     false => write!(f, "FALSE {} null", literal),
                 },
-                Literal::Nil => write!(f, "NIL {}", literal),
+                Literal::Nil => write!(f, "NIL {} null", literal),
             },
             Token::Identifier(identifier) => write!(f, "IDENTIFIER {} null", identifier),
             Token::And => write!(f, "AND and null"),
