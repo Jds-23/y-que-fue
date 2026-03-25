@@ -8,6 +8,22 @@ pub enum Literal {
     Nil,
 }
 
+impl Literal {
+    pub fn eval_display(&self) -> String {
+        match self {
+            Literal::Number(s) => {
+                let n: f64 = s.parse().unwrap();
+                if n.fract() == 0.0 {
+                    format!("{}", n as i64)
+                } else {
+                    format!("{}", n)
+                }
+            }
+            _ => format!("{}", self),
+        }
+    }
+}
+
 impl fmt::Display for Literal {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {

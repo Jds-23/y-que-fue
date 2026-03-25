@@ -15,17 +15,7 @@ pub fn run(filename: &str) {
         let tokens = tokenize(&file_contents).0;
         let expr = parse(&mut tokens.into_iter().peekable());
         let result = evaluate(&expr);
-        match result {
-            Literal::Number(n) => {
-                let n: f64 = n.parse().unwrap();
-                if n.fract() == 0.0 {
-                    println!("{}", n as i64);
-                } else {
-                    println!("{}", n);
-                }
-            }
-            _ => println!("{}", result),
-        }
+        println!("{}", result.eval_display());
     }
 }
 
