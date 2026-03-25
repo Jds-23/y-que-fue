@@ -14,14 +14,8 @@ pub fn run(filename: &str) {
     if !file_contents.is_empty() {
         let tokens = tokenize(&file_contents).0;
         let expr = parse(&mut tokens.into_iter().peekable());
-        match evaluate(&expr) {
-            Literal::Number(n) => {
-                println!("{}", n);
-            }
-            literal => {
-                println!("{}", literal)
-            }
-        };
+        let result = evaluate(&expr);
+        println!("{}", result);
     }
 }
 
