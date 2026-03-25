@@ -15,7 +15,7 @@ pub fn run(filename: &str) {
         let tokens = tokenize(&file_contents).0;
         let expr = parse(&mut tokens.into_iter().peekable());
         let result = evaluate(&expr);
-        println!("{}", result.eval_display());
+        println!("{}", result);
     }
 }
 

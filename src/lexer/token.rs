@@ -61,7 +61,7 @@ impl fmt::Display for Token {
             },
             Token::Literal(literal) => match literal {
                 Literal::String(s) => write!(f, "STRING \"{}\" {}", s, literal),
-                Literal::Number(n) => write!(f, "NUMBER {} {}", n, literal),
+                Literal::Number(n) => write!(f, "NUMBER {} {}", n, literal.token_display()),
                 Literal::Boolean(b) => match b {
                     true => write!(f, "TRUE {} null", literal),
                     false => write!(f, "FALSE {} null", literal),

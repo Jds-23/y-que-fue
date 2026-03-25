@@ -9,12 +9,12 @@ pub enum Literal {
 }
 
 impl Literal {
-    pub fn eval_display(&self) -> String {
+    pub fn token_display(&self) -> String {
         match self {
             Literal::Number(s) => {
                 let n: f64 = s.parse().unwrap();
                 if n.fract() == 0.0 {
-                    format!("{}", n as i64)
+                    format!("{:.1}", n)
                 } else {
                     format!("{}", n)
                 }
@@ -30,12 +30,11 @@ impl fmt::Display for Literal {
             Literal::String(s) => write!(f, "{}", s),
             Literal::Number(s) => {
                 let n: f64 = s.parse().unwrap();
-                let out = if n.fract() == 0.0 {
-                    format!("{:.1}", n)
+                if n.fract() == 0.0 {
+                    write!(f, "{}", n as i64)
                 } else {
-                    format!("{}", n)
-                };
-                write!(f, "{}", out)
+                    write!(f, "{}", n)
+                }
             }
             Literal::Boolean(b) => write!(f, "{}", b),
             Literal::Nil => write!(f, "nil"),
