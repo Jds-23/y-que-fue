@@ -44,6 +44,41 @@ pub fn evaluate(expr: &Expr) -> Literal {
             },
             _ => todo!(),
         },
+        Expr::Binary { op, first, second } => match op {
+            Operator::Star => match (evaluate(first), evaluate(second)) {
+                (Literal::Number(a), Literal::Number(b)) => {
+                    let a: f64 = a.parse().unwrap();
+                    let b: f64 = b.parse().unwrap();
+                    Literal::Number(format!("{}", a * b))
+                }
+                _ => todo!(),
+            },
+            Operator::Slash => match (evaluate(first), evaluate(second)) {
+                (Literal::Number(a), Literal::Number(b)) => {
+                    let a: f64 = a.parse().unwrap();
+                    let b: f64 = b.parse().unwrap();
+                    Literal::Number(format!("{}", a / b))
+                }
+                _ => todo!(),
+            },
+            Operator::Plus => match (evaluate(first), evaluate(second)) {
+                (Literal::Number(a), Literal::Number(b)) => {
+                    let a: f64 = a.parse().unwrap();
+                    let b: f64 = b.parse().unwrap();
+                    Literal::Number(format!("{}", a + b))
+                }
+                _ => todo!(),
+            },
+            Operator::Minus => match (evaluate(first), evaluate(second)) {
+                (Literal::Number(a), Literal::Number(b)) => {
+                    let a: f64 = a.parse().unwrap();
+                    let b: f64 = b.parse().unwrap();
+                    Literal::Number(format!("{}", a - b))
+                }
+                _ => todo!(),
+            },
+            _ => todo!(),
+        },
         _ => todo!(),
     }
 }
