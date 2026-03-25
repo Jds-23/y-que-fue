@@ -20,6 +20,7 @@ fn main() {
     match command.as_str() {
         "tokenize" => commands::tokenize::run(filename),
         "parse" => commands::parse::run(filename),
+        "evaluate" => commands::evaluate::run(filename),
         _ => {
             eprintln!("Unknown command: {}", command);
         }

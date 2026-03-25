@@ -13,7 +13,7 @@ pub fn run(filename: &str) {
     });
     if !file_contents.is_empty() {
         let tokens = tokenize(&file_contents).0;
-        let expr: Expr = parse(&mut tokens.into_iter().peekable());
+        let expr = parse(&mut tokens.into_iter().peekable());
         println!("{}", expr)
     }
 }
