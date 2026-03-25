@@ -20,7 +20,7 @@ pub enum Expr {
 impl fmt::Display for Expr {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Expr::Literal(literal) => write!(f, "{}", literal),
+            Expr::Literal(literal) => write!(f, "{}", literal.token_display()),
             Expr::Grouping(group) => write!(f, "(group {})", group),
             Expr::Unary { prefix, expr } => write!(f, "({} {})", prefix, expr),
             Expr::Binary {
