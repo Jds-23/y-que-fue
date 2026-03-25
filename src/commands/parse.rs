@@ -60,7 +60,10 @@ fn parse_primary(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
         Some(Token::Literal(l)) => Expr::Literal(l),
         Some(Token::LeftParen) => {
             let group_expr = parse(iter);
-            Expr::Grouping(Box::new(group_expr))
+            match iter.next() {
+                Some(Token::RightParen) => Expr::Grouping(Box::new(group_expr)),
+                _ => todo!(),
+            }
         }
         Some(Token::Minus) => {
             let right = parse_primary(iter);
