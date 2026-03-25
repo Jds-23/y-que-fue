@@ -55,7 +55,7 @@ pub fn evaluate(expr: &Expr) -> Literal {
                     let b: f64 = b.parse().unwrap();
                     Literal::Number(format!("{}", a * b))
                 }
-                _ => todo!(),
+                _ => std::process::exit(70),
             },
             Operator::Slash => match (evaluate(first), evaluate(second)) {
                 (Literal::Number(a), Literal::Number(b)) => {
@@ -63,7 +63,7 @@ pub fn evaluate(expr: &Expr) -> Literal {
                     let b: f64 = b.parse().unwrap();
                     Literal::Number(format!("{}", a / b))
                 }
-                _ => todo!(),
+                _ => std::process::exit(70),
             },
             Operator::Plus => match (evaluate(first), evaluate(second)) {
                 (Literal::Number(a), Literal::Number(b)) => {
