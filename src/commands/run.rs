@@ -23,9 +23,10 @@ pub fn run(filename: &str) {
 
 pub fn split_into_exprs(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Vec<Stmt> {
     let mut exprs: Vec<Stmt> = vec![];
-    while let Some(token) = iter.next() {
+    while let Some(token) = iter.peek() {
         match token {
             Token::Print => {
+                iter.next();
                 exprs.push(Stmt::Print(parse(iter)));
                 match iter.next() {
                     Some(Token::Operator(Operator::Semicolon)) => {}
