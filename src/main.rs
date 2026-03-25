@@ -21,6 +21,7 @@ fn main() {
         "tokenize" => commands::tokenize::run(filename),
         "parse" => commands::parse::run(filename),
         "evaluate" => commands::evaluate::run(filename),
+        "run" => commands::run::run(filename),
         _ => {
             eprintln!("Unknown command: {}", command);
         }
