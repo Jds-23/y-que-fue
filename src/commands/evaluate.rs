@@ -79,6 +79,5 @@ pub fn evaluate(expr: &Expr) -> Literal {
             },
             _ => todo!(),
         },
-        _ => todo!(),
     }
 }
