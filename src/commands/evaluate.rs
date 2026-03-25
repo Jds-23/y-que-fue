@@ -113,6 +113,7 @@ pub fn evaluate(expr: &Expr) -> Literal {
                 (Literal::Number(a), Literal::String(b)) => Literal::Boolean(false),
                 (Literal::String(a), Literal::Number(b)) => Literal::Boolean(false),
                 (Literal::String(a), Literal::String(b)) => Literal::Boolean(a == b),
+                (Literal::Boolean(a), Literal::Boolean(b)) => Literal::Boolean(a == b),
                 _ => todo!(),
             },
             Operator::BangEqual => match (evaluate(first), evaluate(second)) {
@@ -122,6 +123,7 @@ pub fn evaluate(expr: &Expr) -> Literal {
                     Literal::Boolean(a != b)
                 }
                 (Literal::String(a), Literal::String(b)) => Literal::Boolean(a != b),
+                (Literal::Boolean(a), Literal::Boolean(b)) => Literal::Boolean(a != b),
                 _ => todo!(),
             },
             _ => todo!(),
