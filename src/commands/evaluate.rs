@@ -14,7 +14,7 @@ pub fn run(filename: &str) {
     if !file_contents.is_empty() {
         let tokens = tokenize(&file_contents).0;
         let expr = parse(&mut tokens.into_iter().peekable());
-        eprintln!("{}", expr);
+        println!("{}", expr);
         match evaluate(&expr) {
             Literal::Number(n) => {
                 println!("{}", n);
@@ -68,7 +68,7 @@ pub fn evaluate(expr: &Expr) -> Literal {
                     let b: f64 = b.parse().unwrap();
                     Literal::Number(format!("{}", a + b))
                 }
-                (Literal::String(a), Literal::String(b)) => Literal::Number(format!("{}{}", a, b)),
+                (Literal::String(a), Literal::String(b)) => Literal::String(format!("{}{}", a, b)),
                 _ => todo!(),
             },
             Operator::Minus => match (evaluate(first), evaluate(second)) {
