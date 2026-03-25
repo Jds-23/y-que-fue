@@ -14,7 +14,7 @@ pub fn run(filename: &str) {
     if !file_contents.is_empty() {
         let tokens = tokenize(&file_contents).0;
         let expr = parse(&mut tokens.into_iter().peekable());
-        println!("{}", expr);
+        eprintln!("{}", expr);
         match evaluate(&expr) {
             Literal::Number(n) => {
                 println!("{}", n);
