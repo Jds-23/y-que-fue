@@ -24,6 +24,7 @@ pub fn evaluate(expr: &Expr) -> String {
             _ => format!("{}", literal),
         },
         Expr::Grouping(expr) => evaluate(expr),
+        Expr::Unary { prefix, expr } => format!("{}{}", prefix, evaluate(expr)),
         _ => todo!(),
     }
 }
