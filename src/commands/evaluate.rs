@@ -116,16 +116,8 @@ pub fn evaluate(expr: &Expr) -> Literal {
                     let b: f64 = b.parse().unwrap();
                     Literal::Boolean(a == b)
                 }
-                (Literal::Number(a), Literal::String(b)) => {
-                    let a: f64 = a.parse().unwrap();
-                    let b: f64 = b.parse().unwrap();
-                    Literal::Boolean(a == b)
-                }
-                (Literal::String(a), Literal::Number(b)) => {
-                    let a: f64 = a.parse().unwrap();
-                    let b: f64 = b.parse().unwrap();
-                    Literal::Boolean(a == b)
-                }
+                (Literal::Number(a), Literal::String(b)) => Literal::Boolean(false),
+                (Literal::String(a), Literal::Number(b)) => Literal::Boolean(false),
                 (Literal::String(a), Literal::String(b)) => Literal::Boolean(a == b),
                 _ => todo!(),
             },
