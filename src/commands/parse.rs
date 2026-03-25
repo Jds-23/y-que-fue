@@ -144,6 +144,9 @@ fn parse_primary(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
             eprintln!("Unexpected '{}' after expression.", t);
             std::process::exit(65);
         }
-        _ => todo!(),
+        _ => {
+            eprintln!("Unexpected expression.");
+            std::process::exit(65);
+        }
     }
 }
