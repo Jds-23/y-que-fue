@@ -116,6 +116,7 @@ pub fn evaluate(expr: &Expr) -> Literal {
                     let b: f64 = b.parse().unwrap();
                     Literal::Boolean(a == b)
                 }
+                (Literal::String(a), Literal::String(b)) => Literal::Boolean(a == b),
                 _ => todo!(),
             },
             Operator::BangEqual => match (evaluate(first), evaluate(second)) {
@@ -124,6 +125,7 @@ pub fn evaluate(expr: &Expr) -> Literal {
                     let b: f64 = b.parse().unwrap();
                     Literal::Boolean(a != b)
                 }
+                (Literal::String(a), Literal::String(b)) => Literal::Boolean(a != b),
                 _ => todo!(),
             },
             _ => todo!(),
