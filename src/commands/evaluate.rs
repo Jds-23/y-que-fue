@@ -34,17 +34,11 @@ pub fn evaluate(expr: &Expr) -> Literal {
         // },
         Expr::Grouping(expr) => evaluate(expr),
         Expr::Unary { prefix, expr } => match prefix {
-            Operator::Bang => {
-                match **expr {
-                    Expr::Literal(ref literal) => match literal {
-                        Literal::Boolean(false) => Literal::Boolean(true),
-                        Literal::Nil => Literal::Boolean(true),
-                        _ => Literal::Boolean(false),
-                    },
-                    _ => todo!(),
-                }
-                // format!("{}{}", prefix,)
-            }
+            Operator::Bang => match evaluate(expr) {
+                Literal::Boolean(false) => Literal::Boolean(true),
+                Literal::Nil => Literal::Boolean(true),
+                _ => Literal::Boolean(false),
+            },
             Operator::Minus => match **expr {
                 Expr::Literal(ref literal) => match literal {
                     Literal::Number(n) => Literal::Number(format!("-{}", n)),
