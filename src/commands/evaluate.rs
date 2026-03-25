@@ -40,7 +40,7 @@ pub fn evaluate(expr: &Expr) -> Literal {
                     let n: f64 = n.parse().unwrap();
                     Literal::Number(format!("{}", -n))
                 }
-                _ => todo!(),
+                _ => std::process::exit(70),
             },
             _ => todo!(),
         },
