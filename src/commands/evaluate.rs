@@ -72,7 +72,7 @@ pub fn evaluate(expr: &Expr) -> Literal {
                     Literal::Number(format!("{}", a + b))
                 }
                 (Literal::String(a), Literal::String(b)) => Literal::String(format!("{}{}", a, b)),
-                _ => todo!(),
+                _ => std::process::exit(70),
             },
             Operator::Minus => match (evaluate(first), evaluate(second)) {
                 (Literal::Number(a), Literal::Number(b)) => {
