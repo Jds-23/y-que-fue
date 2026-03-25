@@ -3,8 +3,7 @@ use std::{fs, iter::Peekable};
 use crate::{
     commands::{parse::parse, tokenize::tokenize},
     lexer::token::Token,
-    operator::Operator,
-    parser::{expression::Expr, statement::Stmt},
+    parser::statement::Stmt,
 };
 
 pub fn run(filename: &str) {
@@ -28,7 +27,8 @@ pub fn split_into_exprs(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Vec
             Token::Print => {
                 exprs.push(Stmt::Print(parse(iter)));
             }
-            _ => todo!(),
+
+            token => println!("{}", token),
         }
     }
     exprs
