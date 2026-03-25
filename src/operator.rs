@@ -48,6 +48,32 @@ impl Operator {
         }
     }
 
+    pub fn token_name(&self) -> &str {
+        match self {
+            Operator::LeftParen => "LEFT_PAREN",
+            Operator::RightParen => "RIGHT_PAREN",
+            Operator::LeftBraces => "LEFT_BRACE",
+            Operator::RightBraces => "RIGHT_BRACE",
+            Operator::Star => "STAR",
+            Operator::Dot => "DOT",
+            Operator::Comma => "COMMA",
+            Operator::Plus => "PLUS",
+            Operator::Minus => "MINUS",
+            Operator::Semicolon => "SEMICOLON",
+            Operator::Slash => "SLASH",
+            Operator::DoubleSlash => "DOUBLE_SLASH",
+            Operator::Equal => "EQUAL",
+            Operator::EqualEqual => "EQUAL_EQUAL",
+            Operator::Bang => "BANG",
+            Operator::BangEqual => "BANG_EQUAL",
+            Operator::Less => "LESS",
+            Operator::LessEqual => "LESS_EQUAL",
+            Operator::Greater => "GREATER",
+            Operator::GreaterEqual => "GREATER_EQUAL",
+            Operator::StringQuote => "STRING_QUOTE",
+        }
+    }
+
     pub fn double_char(&self, next: char) -> Option<Operator> {
         match self {
             Operator::Equal => match next {

@@ -54,27 +54,10 @@ impl fmt::Display for Token {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
             Token::Operator(op) => match op {
-                Operator::LeftParen => write!(f, "LEFT_PAREN ( null"),
-                Operator::RightParen => write!(f, "RIGHT_PAREN ) null"),
-                Operator::LeftBraces => write!(f, "LEFT_BRACE {{ null"),
-                Operator::RightBraces => write!(f, "RIGHT_BRACE }} null"),
-                Operator::Star => write!(f, "STAR * null"),
-                Operator::Dot => write!(f, "DOT . null"),
-                Operator::Comma => write!(f, "COMMA , null"),
-                Operator::Plus => write!(f, "PLUS + null"),
-                Operator::Minus => write!(f, "MINUS - null"),
-                Operator::Semicolon => write!(f, "SEMICOLON ; null"),
-                Operator::Slash => write!(f, "SLASH / null"),
-                Operator::DoubleSlash => write!(f, "DOUBLE_SLASH //"),
-                Operator::Equal => write!(f, "EQUAL = null"),
-                Operator::EqualEqual => write!(f, "EQUAL_EQUAL == null"),
-                Operator::Bang => write!(f, "BANG ! null"),
-                Operator::BangEqual => write!(f, "BANG_EQUAL != null"),
-                Operator::Less => write!(f, "LESS < null"),
-                Operator::LessEqual => write!(f, "LESS_EQUAL <= null"),
-                Operator::Greater => write!(f, "GREATER > null"),
-                Operator::GreaterEqual => write!(f, "GREATER_EQUAL >= null"),
-                Operator::StringQuote => write!(f, "STRING_QUOTE \""),
+                Operator::DoubleSlash | Operator::StringQuote => {
+                    write!(f, "{} {}", op.token_name(), op)
+                }
+                _ => write!(f, "{} {} null", op.token_name(), op),
             },
             Token::Literal(literal) => match literal {
                 Literal::String(s) => write!(f, "STRING \"{}\" {}", s, literal),
