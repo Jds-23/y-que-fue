@@ -19,6 +19,10 @@ pub fn run(filename: &str) {
 }
 
 pub fn parse(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
+    parse_comparison(iter)
+}
+
+fn parse_comparison(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
     let mut expr = parse_addition_subtraction(iter);
     loop {
         match iter.peek() {
