@@ -35,14 +35,11 @@ pub fn evaluate(expr: &Expr) -> Literal {
                 Literal::Nil => Literal::Boolean(true),
                 _ => Literal::Boolean(false),
             },
-            Operator::Minus => match **expr {
-                Expr::Literal(ref literal) => match literal {
-                    Literal::Number(n) => {
-                        let n: f64 = n.parse().unwrap();
-                        Literal::Number(format!("{}", -n))
-                    }
-                    _ => todo!(),
-                },
+            Operator::Minus => match evaluate(expr) {
+                Literal::Number(n) => {
+                    let n: f64 = n.parse().unwrap();
+                    Literal::Number(format!("{}", -n))
+                }
                 _ => todo!(),
             },
             _ => todo!(),
