@@ -23,6 +23,7 @@ pub fn evaluate(expr: &Expr) -> String {
             Literal::Number(n) => format!("{}", n),
             _ => format!("{}", literal),
         },
+        Expr::Grouping(expr) => evaluate(expr),
         _ => todo!(),
     }
 }
