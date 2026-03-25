@@ -1,7 +1,9 @@
+use std::fmt::format;
 use std::fs;
 
 use crate::commands::parse::parse;
 use crate::commands::tokenize::tokenize;
+use crate::literal::Literal;
 use crate::parser::expression::Expr;
 
 pub fn run(filename: &str) {
@@ -18,7 +20,10 @@ pub fn run(filename: &str) {
 
 pub fn evaluate(expr: &Expr) -> String {
     match expr {
-        Expr::Literal(literal) => format!("{}", literal),
+        Expr::Literal(literal) => match literal {
+            Literal::Number(n) => format!("{}", n),
+            _ => format!("{}", literal),
+        },
         _ => todo!(),
     }
 }
