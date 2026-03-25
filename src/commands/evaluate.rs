@@ -67,6 +67,7 @@ pub fn evaluate(expr: &Expr) -> Literal {
                     let b: f64 = b.parse().unwrap();
                     Literal::Number(format!("{}", a + b))
                 }
+                (Literal::String(a), Literal::String(b)) => Literal::Number(format!("{}{}", a, b)),
                 _ => todo!(),
             },
             Operator::Minus => match (evaluate(first), evaluate(second)) {
