@@ -25,9 +25,9 @@ pub fn run(filename: &str) {
     }
 }
 
-pub fn evaluate(expr: &Expr) -> &Literal {
+pub fn evaluate(expr: &Expr) -> Literal {
     match expr {
-        Expr::Literal(literal) => literal,
+        Expr::Literal(literal) => literal.clone(),
         // Expr::Literal(literal) => match literal {
         //     Literal::Number(n) => format!("{}", n),
         //     _ => format!("{}", literal),
@@ -37,9 +37,9 @@ pub fn evaluate(expr: &Expr) -> &Literal {
             Operator::Bang => {
                 match **expr {
                     Expr::Literal(ref literal) => match literal {
-                        Literal::Boolean(false) => &Literal::Boolean(true),
-                        Literal::Nil => &Literal::Boolean(true),
-                        _ => &Literal::Boolean(false),
+                        Literal::Boolean(false) => Literal::Boolean(true),
+                        Literal::Nil => Literal::Boolean(true),
+                        _ => Literal::Boolean(false),
                     },
                     _ => todo!(),
                 }
@@ -47,7 +47,7 @@ pub fn evaluate(expr: &Expr) -> &Literal {
             }
             Operator::Minus => match **expr {
                 Expr::Literal(ref literal) => match literal {
-                    Literal::Number(n) => literal,
+                    Literal::Number(n) => Literal::Number(format!("-{}", n)),
                     _ => todo!(),
                 },
                 _ => todo!(),
