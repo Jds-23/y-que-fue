@@ -3,6 +3,7 @@ use std::iter::Peekable;
 
 use crate::commands::tokenize::tokenize;
 use crate::lexer::token::Token;
+use crate::operator::Operator;
 use crate::parser::expression::Expr;
 
 pub fn run(filename: &str) {
@@ -21,8 +22,11 @@ pub fn parse(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
     let mut expr = parse_multiplicative(iter);
     loop {
         match iter.peek() {
-            Some(Token::Minus) | Some(Token::Plus) => {
-                let op = iter.next().unwrap();
+            Some(Token::Operator(Operator::Minus)) | Some(Token::Operator(Operator::Plus)) => {
+                let op = match iter.next().unwrap() {
+                    Token::Operator(op) => op,
+                    _ => unreachable!(),
+                };
                 let right = parse_multiplicative(iter);
                 expr = Expr::Binary {
                     op,
@@ -40,8 +44,11 @@ fn parse_multiplicative(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Exp
     let mut expr = parse_primary(iter);
     loop {
         match iter.peek() {
-            Some(Token::Star) | Some(Token::Slash) => {
-                let op = iter.next().unwrap();
+            Some(Token::Operator(Operator::Star)) | Some(Token::Operator(Operator::Slash)) => {
+                let op = match iter.next().unwrap() {
+                    Token::Operator(op) => op,
+                    _ => unreachable!(),
+                };
                 let right = parse_primary(iter);
                 expr = Expr::Binary {
                     op,
@@ -58,25 +65,27 @@ fn parse_multiplicative(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Exp
 fn parse_primary(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
     match iter.next() {
         Some(Token::Literal(l)) => Expr::Literal(l),
-        Some(Token::LeftParen) => {
+        Some(Token::Operator(Operator::LeftParen)) => {
             let group_expr = parse(iter);
             match iter.next() {
-                Some(Token::RightParen) => Expr::Grouping(Box::new(group_expr)),
+                Some(Token::Operator(Operator::RightParen)) => {
+                    Expr::Grouping(Box::new(group_expr))
+                }
                 _ => todo!(),
             }
         }
-        Some(Token::Minus) => {
+        Some(Token::Operator(op @ Operator::Minus)) => {
             let right = parse_primary(iter);
             Expr::Unary {
                 expr: Box::new(right),
-                prefix: Token::Minus,
+                prefix: op,
             }
         }
-        Some(Token::Bang) => {
+        Some(Token::Operator(op @ Operator::Bang)) => {
             let right = parse_primary(iter);
             Expr::Unary {
                 expr: Box::new(right),
-                prefix: Token::Bang,
+                prefix: op,
             }
         }
         _ => todo!(),

@@ -1,37 +1,12 @@
 use std::{fmt, str::FromStr};
 
 use crate::literal::Literal;
+use crate::operator::Operator;
 
 #[derive(Debug)]
 pub enum Token {
-    LeftParen,
-    RightParen,
-    LeftBraces,
-    RightBraces,
-    Star,
-    Dot,
-    Comma,
-    Plus,
-    Minus,
-    Semicolon,
-    Slash,
-    DoubleSlash,
-    Equal,
-    EqualEqual,
-    Bang,
-    BangEqual,
-    Less,
-    LessEqual,
-    Greater,
-    GreaterEqual,
-    StringQuote,
+    Operator(Operator),
     Identifier(String),
-    // Literals
-    // Number(String),
-    // String(String),
-    // Nil,
-    // False,
-    // True,
     Literal(Literal),
     // Keywords
     And,
@@ -78,27 +53,29 @@ impl FromStr for Token {
 impl fmt::Display for Token {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            Token::LeftParen => write!(f, "LEFT_PAREN ( null"),
-            Token::RightParen => write!(f, "RIGHT_PAREN ) null"),
-            Token::LeftBraces => write!(f, "LEFT_BRACE {{ null"),
-            Token::RightBraces => write!(f, "RIGHT_BRACE }} null"),
-            Token::Star => write!(f, "STAR * null"),
-            Token::Dot => write!(f, "DOT . null"),
-            Token::Comma => write!(f, "COMMA , null"),
-            Token::Plus => write!(f, "PLUS + null"),
-            Token::Minus => write!(f, "MINUS - null"),
-            Token::Semicolon => write!(f, "SEMICOLON ; null"),
-            Token::Slash => write!(f, "SLASH / null"),
-            Token::DoubleSlash => write!(f, "DOUBLE_SLASH //"),
-            Token::Equal => write!(f, "EQUAL = null"),
-            Token::EqualEqual => write!(f, "EQUAL_EQUAL == null"),
-            Token::Bang => write!(f, "BANG ! null"),
-            Token::BangEqual => write!(f, "BANG_EQUAL != null"),
-            Token::Less => write!(f, "LESS < null"),
-            Token::LessEqual => write!(f, "LESS_EQUAL <= null"),
-            Token::Greater => write!(f, "GREATER > null"),
-            Token::GreaterEqual => write!(f, "GREATER_EQUAL >= null"),
-            Token::StringQuote => write!(f, "STRING_QUOTE \""),
+            Token::Operator(op) => match op {
+                Operator::LeftParen => write!(f, "LEFT_PAREN ( null"),
+                Operator::RightParen => write!(f, "RIGHT_PAREN ) null"),
+                Operator::LeftBraces => write!(f, "LEFT_BRACE {{ null"),
+                Operator::RightBraces => write!(f, "RIGHT_BRACE }} null"),
+                Operator::Star => write!(f, "STAR * null"),
+                Operator::Dot => write!(f, "DOT . null"),
+                Operator::Comma => write!(f, "COMMA , null"),
+                Operator::Plus => write!(f, "PLUS + null"),
+                Operator::Minus => write!(f, "MINUS - null"),
+                Operator::Semicolon => write!(f, "SEMICOLON ; null"),
+                Operator::Slash => write!(f, "SLASH / null"),
+                Operator::DoubleSlash => write!(f, "DOUBLE_SLASH //"),
+                Operator::Equal => write!(f, "EQUAL = null"),
+                Operator::EqualEqual => write!(f, "EQUAL_EQUAL == null"),
+                Operator::Bang => write!(f, "BANG ! null"),
+                Operator::BangEqual => write!(f, "BANG_EQUAL != null"),
+                Operator::Less => write!(f, "LESS < null"),
+                Operator::LessEqual => write!(f, "LESS_EQUAL <= null"),
+                Operator::Greater => write!(f, "GREATER > null"),
+                Operator::GreaterEqual => write!(f, "GREATER_EQUAL >= null"),
+                Operator::StringQuote => write!(f, "STRING_QUOTE \""),
+            },
             Token::Literal(literal) => match literal {
                 Literal::String(s) => write!(f, "STRING \"{}\" {}", s, literal),
                 Literal::Number(n) => write!(f, "NUMBER {} {}", n, literal),
@@ -130,48 +107,13 @@ impl fmt::Display for Token {
 impl Token {
     pub fn from_char(t: &char) -> Result<Token, char> {
         match t {
-            '(' => Ok(Token::LeftParen),
-            ')' => Ok(Token::RightParen),
-            '{' => Ok(Token::LeftBraces),
-            '}' => Ok(Token::RightBraces),
-            '*' => Ok(Token::Star),
-            '.' => Ok(Token::Dot),
-            ',' => Ok(Token::Comma),
-            '+' => Ok(Token::Plus),
-            '-' => Ok(Token::Minus),
-            ';' => Ok(Token::Semicolon),
-            '/' => Ok(Token::Slash),
-            '=' => Ok(Token::Equal),
-            '!' => Ok(Token::Bang),
-            '<' => Ok(Token::Less),
-            '>' => Ok(Token::Greater),
             '0'..='9' => Ok(Token::Literal(Literal::Number("".to_string()))),
-            '"' => Ok(Token::StringQuote),
-            _ => Err(*t),
+            _ => Operator::from_char(t).map(Token::Operator),
         }
     }
     pub fn double_char_operator(&self, next: char) -> Option<Token> {
         match self {
-            Token::Equal => match next {
-                '=' => Some(Token::EqualEqual),
-                _ => None,
-            },
-            Token::Bang => match next {
-                '=' => Some(Token::BangEqual),
-                _ => None,
-            },
-            Token::Less => match next {
-                '=' => Some(Token::LessEqual),
-                _ => None,
-            },
-            Token::Greater => match next {
-                '=' => Some(Token::GreaterEqual),
-                _ => None,
-            },
-            Token::Slash => match next {
-                '/' => Some(Token::DoubleSlash),
-                _ => None,
-            },
+            Token::Operator(op) => op.double_char(next).map(Token::Operator),
             _ => None,
         }
     }

@@ -7,6 +7,7 @@ use crate::lexer::number::extract_number_literal;
 use crate::lexer::string::extract_string_literal;
 use crate::lexer::token::Token;
 use crate::literal::Literal;
+use crate::operator::Operator;
 
 pub fn run(filename: &str) {
     eprintln!("Logs from your program will appear here!");
@@ -67,7 +68,7 @@ pub fn tokenize(file_contents: &str) -> (Vec<Token>, Vec<LexError>) {
                 continue;
             }
             match Token::from_char(&token) {
-                Ok(Token::StringQuote) => {
+                Ok(Token::Operator(Operator::StringQuote)) => {
                     let result = extract_string_literal(&mut iter, &mut line);
                     match result {
                         Ok(s) => tokens.push(Token::Literal(Literal::String(s))),
@@ -90,7 +91,7 @@ pub fn tokenize(file_contents: &str) -> (Vec<Token>, Vec<LexError>) {
                 Ok(t) => {
                     let next = iter.peek().copied().unwrap_or('\0');
                     match t.double_char_operator(next) {
-                        Some(Token::DoubleSlash) => {
+                        Some(Token::Operator(Operator::DoubleSlash)) => {
                             while let Some(t) = iter.next() {
                                 if t == '\n' {
                                     line += 1;

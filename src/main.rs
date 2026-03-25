@@ -4,6 +4,7 @@ use std::env;
 mod commands;
 mod lexer;
 mod literal;
+mod operator;
 mod parser;
 
 fn main() {
