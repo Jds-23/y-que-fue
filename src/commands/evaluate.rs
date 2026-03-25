@@ -28,10 +28,6 @@ pub fn run(filename: &str) {
 pub fn evaluate(expr: &Expr) -> Literal {
     match expr {
         Expr::Literal(literal) => literal.clone(),
-        // Expr::Literal(literal) => match literal {
-        //     Literal::Number(n) => format!("{}", n),
-        //     _ => format!("{}", literal),
-        // },
         Expr::Grouping(expr) => evaluate(expr),
         Expr::Unary { prefix, expr } => match prefix {
             Operator::Bang => match evaluate(expr) {
