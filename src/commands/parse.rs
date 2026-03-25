@@ -19,6 +19,31 @@ pub fn run(filename: &str) {
 }
 
 pub fn parse(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
+    let mut expr = parse_addition_subtraction(iter);
+    loop {
+        match iter.peek() {
+            Some(Token::Operator(Operator::Greater))
+            | Some(Token::Operator(Operator::Less))
+            | Some(Token::Operator(Operator::GreaterEqual))
+            | Some(Token::Operator(Operator::LessEqual)) => {
+                let op = match iter.next().unwrap() {
+                    Token::Operator(op) => op,
+                    _ => unreachable!(),
+                };
+                let right = parse_addition_subtraction(iter);
+                expr = Expr::Binary {
+                    op,
+                    first: Box::new(expr),
+                    second: Box::new(right),
+                };
+            }
+            _ => break,
+        }
+    }
+    expr
+}
+
+fn parse_addition_subtraction(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
     let mut expr = parse_multiplicative(iter);
     loop {
         match iter.peek() {
@@ -68,9 +93,7 @@ fn parse_primary(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
         Some(Token::Operator(Operator::LeftParen)) => {
             let group_expr = parse(iter);
             match iter.next() {
-                Some(Token::Operator(Operator::RightParen)) => {
-                    Expr::Grouping(Box::new(group_expr))
-                }
+                Some(Token::Operator(Operator::RightParen)) => Expr::Grouping(Box::new(group_expr)),
                 _ => todo!(),
             }
         }
