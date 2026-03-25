@@ -3,6 +3,7 @@ use std::{fs, iter::Peekable};
 use crate::{
     commands::{parse::parse, tokenize::tokenize},
     lexer::token::Token,
+    operator::Operator,
     parser::statement::Stmt,
 };
 
@@ -26,9 +27,15 @@ pub fn split_into_exprs(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Vec
         match token {
             Token::Print => {
                 exprs.push(Stmt::Print(parse(iter)));
+                match iter.next() {
+                    Some(Token::Operator(Operator::Semicolon)) => {}
+                    _ => {
+                        eprintln!("Expect ';' after statement.");
+                        std::process::exit(65);
+                    }
+                }
             }
-
-            token => println!("{}", token),
+            token => todo!(),
         }
     }
     exprs
