@@ -120,7 +120,10 @@ fn parse_primary(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
             let group_expr = parse(iter);
             match iter.next() {
                 Some(Token::Operator(Operator::RightParen)) => Expr::Grouping(Box::new(group_expr)),
-                _ => todo!(),
+                _ => {
+                    eprintln!("Expect ')' after expression.");
+                    std::process::exit(65);
+                }
             }
         }
         Some(Token::Operator(op @ Operator::Minus)) => {
