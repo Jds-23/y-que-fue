@@ -1,10 +1,9 @@
-use std::{fs, iter::Peekable};
+use std::fs;
 
 use crate::{
-    commands::{parse::parse, tokenize::tokenize},
+    commands::{evaluate::evaluate, parse::parse, tokenize::tokenize},
     lexer::token::Token,
     operator::Operator,
-    parser::statement::Stmt,
 };
 
 pub fn run(filename: &str) {
@@ -14,41 +13,33 @@ pub fn run(filename: &str) {
     });
     if !file_contents.is_empty() {
         let tokens = tokenize(&file_contents).0;
-        let mut stmts = split_into_exprs(&mut tokens.into_iter().peekable()).into_iter();
-        while let Some(stmt) = stmts.next() {
-            println!("{}", stmt);
-        }
-    }
-}
-
-pub fn split_into_exprs(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Vec<Stmt> {
-    let mut exprs: Vec<Stmt> = vec![];
-    while let Some(token) = iter.peek() {
-        match token {
-            Token::Print => {
-                iter.next();
-                exprs.push(Stmt::Print(parse(iter)));
-                match iter.next() {
-                    Some(Token::Operator(Operator::Semicolon)) => {}
-                    _ => {
-                        eprintln!("Expect ';' after statement.");
-                        std::process::exit(65);
+        let iter = &mut tokens.into_iter().peekable();
+        while let Some(token) = iter.peek() {
+            match token {
+                Token::Print => {
+                    iter.next();
+                    let expr = parse(iter);
+                    match iter.next() {
+                        Some(Token::Operator(Operator::Semicolon)) => {}
+                        _ => {
+                            eprintln!("Expect ';' after statement.");
+                            std::process::exit(65);
+                        }
                     }
+                    println!("{}", evaluate(&expr));
                 }
-            }
-            _ => {
-                // exprs.push(Stmt::Print(parse(iter)));
-                parse(iter);
-                match iter.next() {
-                    Some(Token::Operator(Operator::Semicolon)) => {}
-                    Some(token) => {
-                        // eprintln!("Expect ';' after statement.");
-                        std::process::exit(70);
+                _ => {
+                    let expr = parse(iter);
+                    match iter.next() {
+                        Some(Token::Operator(Operator::Semicolon)) => {}
+                        Some(_) => {
+                            std::process::exit(70);
+                        }
+                        _ => todo!(),
                     }
-                    _ => todo!(),
+                    evaluate(&expr);
                 }
             }
         }
     }
-    exprs
 }
