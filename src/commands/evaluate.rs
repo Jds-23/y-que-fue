@@ -78,6 +78,38 @@ pub fn evaluate(expr: &Expr) -> Literal {
                 }
                 _ => todo!(),
             },
+            Operator::Greater => match (evaluate(first), evaluate(second)) {
+                (Literal::Number(a), Literal::Number(b)) => {
+                    let a: f64 = a.parse().unwrap();
+                    let b: f64 = b.parse().unwrap();
+                    Literal::Boolean(a > b)
+                }
+                _ => todo!(),
+            },
+            Operator::Less => match (evaluate(first), evaluate(second)) {
+                (Literal::Number(a), Literal::Number(b)) => {
+                    let a: f64 = a.parse().unwrap();
+                    let b: f64 = b.parse().unwrap();
+                    Literal::Boolean(a < b)
+                }
+                _ => todo!(),
+            },
+            Operator::GreaterEqual => match (evaluate(first), evaluate(second)) {
+                (Literal::Number(a), Literal::Number(b)) => {
+                    let a: f64 = a.parse().unwrap();
+                    let b: f64 = b.parse().unwrap();
+                    Literal::Boolean(a >= b)
+                }
+                _ => todo!(),
+            },
+            Operator::LessEqual => match (evaluate(first), evaluate(second)) {
+                (Literal::Number(a), Literal::Number(b)) => {
+                    let a: f64 = a.parse().unwrap();
+                    let b: f64 = b.parse().unwrap();
+                    Literal::Boolean(a <= b)
+                }
+                _ => todo!(),
+            },
             _ => todo!(),
         },
     }
