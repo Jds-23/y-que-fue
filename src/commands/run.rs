@@ -42,9 +42,8 @@ pub fn split_into_exprs(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Vec
                 match iter.next() {
                     Some(Token::Operator(Operator::Semicolon)) => {}
                     Some(token) => {
-                        todo!("{}", token)
                         // eprintln!("Expect ';' after statement.");
-                        // std::process::exit(65);
+                        std::process::exit(70);
                     }
                     _ => todo!(),
                 }
