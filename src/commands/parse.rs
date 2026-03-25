@@ -140,6 +140,10 @@ fn parse_primary(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
                 prefix: op,
             }
         }
+        Some(t) => {
+            eprintln!("Unexpected '{}' after expression.", t);
+            std::process::exit(65);
+        }
         _ => todo!(),
     }
 }
