@@ -19,9 +19,31 @@ pub fn run(filename: &str) {
 }
 
 pub fn parse(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
-    parse_comparison(iter)
+    parse_equality(iter)
 }
 
+fn parse_equality(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
+    let mut expr = parse_comparison(iter);
+    loop {
+        match iter.peek() {
+            Some(Token::Operator(Operator::EqualEqual))
+            | Some(Token::Operator(Operator::BangEqual)) => {
+                let op = match iter.next().unwrap() {
+                    Token::Operator(op) => op,
+                    _ => unreachable!(),
+                };
+                let right = parse_comparison(iter);
+                expr = Expr::Binary {
+                    op,
+                    first: Box::new(expr),
+                    second: Box::new(right),
+                };
+            }
+            _ => break,
+        }
+    }
+    expr
+}
 fn parse_comparison(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
     let mut expr = parse_addition_subtraction(iter);
     loop {
