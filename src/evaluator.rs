@@ -126,7 +126,7 @@ impl Evaluator {
             },
             Expr::Identifier(identifier) => match self.get(identifier) {
                 Some(literal) => literal.clone(),
-                _ => todo!(),
+                _ => std::process::exit(70),
             },
         }
     }
