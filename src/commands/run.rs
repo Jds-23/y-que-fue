@@ -35,7 +35,6 @@ pub fn run(filename: &str) {
                     match iter.next() {
                         Some(Token::Identifier(identifier)) => match iter.next() {
                             Some(Token::Operator(Operator::Equal)) => {
-                                iter.next();
                                 let expr = parse(iter);
                                 match iter.next() {
                                     Some(Token::Operator(Operator::Semicolon)) => {}
