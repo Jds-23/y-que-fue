@@ -4,7 +4,9 @@ use crate::{
     commands::{parse::parse, tokenize::tokenize},
     evaluator::Evaluator,
     lexer::token::Token,
+    literal::Literal,
     operator::Operator,
+    parser::expression::Expr,
 };
 
 pub fn run(filename: &str) {
@@ -45,10 +47,11 @@ pub fn run(filename: &str) {
                                 }
                                 evaluator.insert_with_expr(identifier, &expr);
                             }
-                            _ => {
-                                eprintln!("Expect '=' after identifer.");
-                                std::process::exit(65);
+                            Some(Token::Operator(Operator::Semicolon)) => {
+                                evaluator
+                                    .insert_with_expr(identifier, &Expr::Literal(Literal::Nil));
                             }
+                            _ => todo!(),
                         },
                         _ => {
                             eprintln!("Expected identifer after var.");
