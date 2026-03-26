@@ -1,7 +1,8 @@
 use std::fs;
 
 use crate::{
-    commands::{evaluate::evaluate, parse::parse, tokenize::tokenize},
+    commands::{parse::parse, tokenize::tokenize},
+    evaluator::Evaluator,
     lexer::token::Token,
     operator::Operator,
 };
@@ -14,6 +15,7 @@ pub fn run(filename: &str) {
     if !file_contents.is_empty() {
         let tokens = tokenize(&file_contents).0;
         let iter = &mut tokens.into_iter().peekable();
+        let mut evaluator = Evaluator::new();
         while let Some(token) = iter.peek() {
             match token {
                 Token::Print => {
@@ -26,7 +28,34 @@ pub fn run(filename: &str) {
                             std::process::exit(65);
                         }
                     }
-                    println!("{}", evaluate(&expr));
+                    println!("{}", evaluator.evaluate(&expr));
+                }
+                Token::Var => {
+                    iter.next();
+                    match iter.next() {
+                        Some(Token::Identifier(identifier)) => match iter.next() {
+                            Some(Token::Operator(Operator::Equal)) => {
+                                iter.next();
+                                let expr = parse(iter);
+                                match iter.next() {
+                                    Some(Token::Operator(Operator::Semicolon)) => {}
+                                    _ => {
+                                        eprintln!("Expect ';' after statement.");
+                                        std::process::exit(65);
+                                    }
+                                }
+                                evaluator.insert_with_expr(identifier, &expr);
+                            }
+                            _ => {
+                                eprintln!("Expect '=' after identifer.");
+                                std::process::exit(65);
+                            }
+                        },
+                        _ => {
+                            eprintln!("Expected identifer after var.");
+                            std::process::exit(65);
+                        }
+                    }
                 }
                 _ => {
                     let expr = parse(iter);
@@ -37,7 +66,7 @@ pub fn run(filename: &str) {
                         }
                         _ => todo!(),
                     }
-                    evaluate(&expr);
+                    evaluator.evaluate(&expr);
                 }
             }
         }

@@ -2,6 +2,7 @@
 use std::env;
 
 mod commands;
+mod evaluator;
 mod lexer;
 mod literal;
 mod operator;
