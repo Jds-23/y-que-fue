@@ -19,7 +19,28 @@ pub fn run(filename: &str) {
 }
 
 pub fn parse(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
-    parse_equality(iter)
+    parse_assignment(iter)
+}
+
+fn parse_assignment(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
+    let expr = parse_equality(iter);
+
+    if let Some(Token::Operator(Operator::Equal)) = iter.peek() {
+        iter.next();
+        let value = parse_assignment(iter);
+
+        if let Expr::Identifier(name) = expr {
+            return Expr::Assign {
+                name,
+                value: Box::new(value),
+            };
+        } else {
+            eprintln!("Invalid assignment target.");
+            std::process::exit(65);
+        }
+    }
+
+    expr
 }
 
 fn parse_equality(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {

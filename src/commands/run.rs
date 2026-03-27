@@ -6,7 +6,6 @@ use crate::{
     lexer::token::Token,
     literal::Literal,
     operator::Operator,
-    parser::expression::Expr,
 };
 
 pub fn run(filename: &str) {
@@ -34,25 +33,29 @@ pub fn run(filename: &str) {
                 }
                 Token::Var => {
                     iter.next();
-                    match iter.next() {
-                        Some(Token::Identifier(identifier)) => match iter.next() {
-                            Some(Token::Operator(Operator::Equal)) => {
-                                let expr = parse(iter);
-                                match iter.next() {
-                                    Some(Token::Operator(Operator::Semicolon)) => {}
-                                    _ => {
-                                        eprintln!("Expect ';' after statement.");
-                                        std::process::exit(65);
+                    match iter.peek() {
+                        Some(Token::Identifier(identifier)) => {
+                            let identifier = identifier.clone();
+                            iter.next();
+                            match iter.next() {
+                                Some(Token::Operator(Operator::Equal)) => {
+                                    let expr = parse(iter);
+                                    match iter.next() {
+                                        Some(Token::Operator(Operator::Semicolon)) => {}
+                                        _ => {
+                                            eprintln!("Expect ';' after statement.");
+                                            std::process::exit(65);
+                                        }
                                     }
+                                    let val = evaluator.evaluate(&expr);
+                                    evaluator.insert(identifier, val);
                                 }
-                                evaluator.insert_with_expr(identifier, &expr);
-                            }
-                            Some(Token::Operator(Operator::Semicolon)) => {
-                                evaluator
-                                    .insert_with_expr(identifier, &Expr::Literal(Literal::Nil));
-                            }
-                            _ => todo!(),
-                        },
+                                Some(Token::Operator(Operator::Semicolon)) => {
+                                    evaluator.insert(identifier, Literal::Nil);
+                                }
+                                _ => todo!(),
+                            };
+                        }
                         _ => {
                             eprintln!("Expected identifer after var.");
                             std::process::exit(65);

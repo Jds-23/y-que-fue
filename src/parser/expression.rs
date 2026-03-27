@@ -16,6 +16,10 @@ pub enum Expr {
         second: Box<Expr>,
     },
     Identifier(String),
+    Assign {
+        name: String,
+        value: Box<Expr>,
+    },
 }
 
 impl fmt::Display for Expr {
@@ -27,7 +31,8 @@ impl fmt::Display for Expr {
             Expr::Binary {
                 op, first, second, ..
             } => write!(f, "({} {} {})", op, first, second),
-            _ => todo!(),
+            Expr::Identifier(name) => write!(f, "{}", name),
+            Expr::Assign { name, value } => write!(f, "(= {} {})", name, value),
         }
     }
 }

@@ -13,7 +13,7 @@ impl Evaluator {
         }
     }
 
-    pub fn evaluate(&self, expr: &Expr) -> Literal {
+    pub fn evaluate(&mut self, expr: &Expr) -> Literal {
         match expr {
             Expr::Literal(literal) => literal.clone(),
             Expr::Grouping(expr) => self.evaluate(expr),
@@ -128,6 +128,15 @@ impl Evaluator {
                 Some(literal) => literal.clone(),
                 _ => std::process::exit(70),
             },
+            Expr::Assign { name, value } => {
+                let val = self.evaluate(value);
+                if !self.storage.contains_key(name) {
+                    eprintln!("Undefined variable '{}'.", name);
+                    std::process::exit(70);
+                }
+                self.storage.insert(name.clone(), val.clone());
+                val
+            }
         }
     }
 
@@ -139,7 +148,4 @@ impl Evaluator {
         self.storage.insert(k, val);
     }
 
-    pub fn insert_with_expr(&mut self, k: String, expr: &Expr) {
-        self.insert(k, self.evaluate(expr));
-    }
 }

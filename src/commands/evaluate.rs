@@ -12,7 +12,7 @@ pub fn run(filename: &str) {
     if !file_contents.is_empty() {
         let tokens = tokenize(&file_contents).0;
         let expr = parse(&mut tokens.into_iter().peekable());
-        let evaluator = Evaluator::new();
+        let mut evaluator = Evaluator::new();
         let result = evaluator.evaluate(&expr);
         println!("{}", result);
     }
