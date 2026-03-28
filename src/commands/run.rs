@@ -17,6 +17,7 @@ pub fn run(filename: &str) {
         let iter = &mut tokens.into_iter().peekable();
         let mut evaluator = Evaluator::new();
         while let Some(token) = iter.peek() {
+            eprintln!("{}", token);
             match token {
                 Token::Operator(op) => match op {
                     Operator::LeftBraces => {
