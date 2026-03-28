@@ -5,6 +5,7 @@ use crate::commands::tokenize::tokenize;
 use crate::lexer::token::Token;
 use crate::operator::Operator;
 use crate::parser::expression::Expr;
+use crate::parser::statement::Stmt;
 
 pub fn run(filename: &str) {
     let file_contents = fs::read_to_string(filename).unwrap_or_else(|_| {
@@ -20,6 +21,72 @@ pub fn run(filename: &str) {
 
 pub fn parse(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {
     parse_assignment(iter)
+}
+
+pub fn parse_statement(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Stmt {
+    match iter.peek() {
+        Some(Token::Print) => {
+            iter.next();
+            let expr = parse(iter);
+            expect_semicolon(iter);
+            Stmt::Print(expr)
+        }
+        Some(Token::Var) => {
+            iter.next();
+            match iter.peek() {
+                Some(Token::Identifier(_)) => {
+                    let name = match iter.next() {
+                        Some(Token::Identifier(name)) => name,
+                        _ => unreachable!(),
+                    };
+                    match iter.peek() {
+                        Some(Token::Operator(Operator::Equal)) => {
+                            iter.next();
+                            let expr = parse(iter);
+                            expect_semicolon(iter);
+                            Stmt::Var {
+                                name,
+                                initializer: Some(expr),
+                            }
+                        }
+                        Some(Token::Operator(Operator::Semicolon)) => {
+                            iter.next();
+                            Stmt::Var {
+                                name,
+                                initializer: None,
+                            }
+                        }
+                        _ => todo!(),
+                    }
+                }
+                _ => {
+                    eprintln!("Expected identifer after var.");
+                    std::process::exit(65);
+                }
+            }
+        }
+        _ => {
+            let expr = parse(iter);
+            match iter.next() {
+                Some(Token::Operator(Operator::Semicolon)) => {}
+                Some(_) => {
+                    std::process::exit(70);
+                }
+                _ => todo!(),
+            }
+            Stmt::Expression(expr)
+        }
+    }
+}
+
+fn expect_semicolon(iter: &mut Peekable<impl Iterator<Item = Token>>) {
+    match iter.next() {
+        Some(Token::Operator(Operator::Semicolon)) => {}
+        _ => {
+            eprintln!("Expect ';' after statement.");
+            std::process::exit(65);
+        }
+    }
 }
 
 fn parse_assignment(iter: &mut Peekable<impl Iterator<Item = Token>>) -> Expr {

@@ -1,15 +1,30 @@
-use std::collections::HashMap;
-
-use crate::{literal::Literal, operator::Operator, parser::expression::Expr};
+use crate::{
+    enviroment::Enviroment,
+    literal::Literal,
+    operator::Operator,
+    parser::{expression::Expr, statement::Stmt},
+};
 
 pub struct Evaluator {
-    storage: HashMap<String, Literal>,
+    pub enviroment: Enviroment,
 }
 
 impl Evaluator {
     pub fn new() -> Self {
         Evaluator {
-            storage: HashMap::new(),
+            enviroment: Enviroment::new(None),
+        }
+    }
+
+    pub fn scope_in(&mut self) {
+        let parent = std::mem::replace(&mut self.enviroment, Enviroment::new(None));
+        self.enviroment = Enviroment::new(Some(Box::new(parent)));
+    }
+
+    pub fn scope_out(&mut self) {
+        let parent = self.enviroment.enviroment.take();
+        if let Some(parent) = parent {
+            self.enviroment = *parent;
         }
     }
 
@@ -130,22 +145,32 @@ impl Evaluator {
             },
             Expr::Assign { name, value } => {
                 let val = self.evaluate(value);
-                if !self.storage.contains_key(name) {
+                if !self.enviroment.assign(name.clone(), val.clone()) {
                     eprintln!("Undefined variable '{}'.", name);
                     std::process::exit(70);
                 }
-                self.storage.insert(name.clone(), val.clone());
                 val
             }
         }
     }
 
+    pub fn execute(&mut self, stmt: &Stmt) {
+        match stmt {
+            Stmt::Print(expr) => println!("{}", self.evaluate(expr)),
+            Stmt::Var { name, initializer } => {
+                let val = match initializer {
+                    Some(expr) => self.evaluate(expr),
+                    None => Literal::Nil,
+                };
+                self.enviroment.declare(name.clone(), val);
+            }
+            Stmt::Expression(expr) => {
+                self.evaluate(expr);
+            }
+        }
+    }
+
     pub fn get(&self, k: &String) -> Option<&Literal> {
-        self.storage.get(k)
+        self.enviroment.get(k)
     }
-
-    pub fn insert(&mut self, k: String, val: Literal) {
-        self.storage.insert(k, val);
-    }
-
 }

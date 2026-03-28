@@ -1,10 +1,9 @@
 use std::fs;
 
 use crate::{
-    commands::{parse::parse, tokenize::tokenize},
+    commands::{parse::parse_statement, tokenize::tokenize},
     evaluator::Evaluator,
     lexer::token::Token,
-    literal::Literal,
     operator::Operator,
 };
 
@@ -19,61 +18,21 @@ pub fn run(filename: &str) {
         let mut evaluator = Evaluator::new();
         while let Some(token) = iter.peek() {
             match token {
-                Token::Print => {
-                    iter.next();
-                    let expr = parse(iter);
-                    match iter.next() {
-                        Some(Token::Operator(Operator::Semicolon)) => {}
-                        _ => {
-                            eprintln!("Expect ';' after statement.");
-                            std::process::exit(65);
-                        }
+                Token::Operator(op) => match op {
+                    Operator::LeftBraces => {
+                        iter.next();
+                        evaluator.scope_in()
                     }
-                    println!("{}", evaluator.evaluate(&expr));
-                }
-                Token::Var => {
-                    iter.next();
-                    match iter.peek() {
-                        Some(Token::Identifier(identifier)) => {
-                            let identifier = identifier.clone();
-                            iter.next();
-                            match iter.next() {
-                                Some(Token::Operator(Operator::Equal)) => {
-                                    let expr = parse(iter);
-                                    match iter.next() {
-                                        Some(Token::Operator(Operator::Semicolon)) => {}
-                                        _ => {
-                                            eprintln!("Expect ';' after statement.");
-                                            std::process::exit(65);
-                                        }
-                                    }
-                                    let val = evaluator.evaluate(&expr);
-                                    evaluator.insert(identifier, val);
-                                }
-                                Some(Token::Operator(Operator::Semicolon)) => {
-                                    evaluator.insert(identifier, Literal::Nil);
-                                }
-                                _ => todo!(),
-                            };
-                        }
-                        _ => {
-                            eprintln!("Expected identifer after var.");
-                            std::process::exit(65);
-                        }
+                    Operator::RightBraces => {
+                        iter.next();
+                        evaluator.scope_out()
                     }
-                }
-                _ => {
-                    let expr = parse(iter);
-                    match iter.next() {
-                        Some(Token::Operator(Operator::Semicolon)) => {}
-                        Some(_) => {
-                            std::process::exit(70);
-                        }
-                        _ => todo!(),
-                    }
-                    evaluator.evaluate(&expr);
-                }
+                    _ => {}
+                },
+                t => {}
             }
+            let stmt = parse_statement(iter);
+            evaluator.execute(&stmt);
         }
     }
 }

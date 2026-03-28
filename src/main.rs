@@ -2,12 +2,12 @@
 use std::env;
 
 mod commands;
+mod enviroment;
 mod evaluator;
 mod lexer;
 mod literal;
 mod operator;
 mod parser;
-
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 3 {
